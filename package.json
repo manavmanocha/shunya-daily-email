@@ -26,8 +26,11 @@
     "cookies": "^0.7.3",
     "core-js": "^2.5.4",
     "express": "^4.16.4",
+    "googleapis": "^35.0.0",
     "jquery": "^3.3.1",
     "mongodb": "^3.1.9",
+    "node-cron": "^2.0.3",
+    "nodemailer": "^4.6.8",
     "popper.js": "^1.14.5",
     "rxjs": "~6.2.0",
     "zone.js": "~0.8.26"

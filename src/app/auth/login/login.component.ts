@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit {
         if(prog.status){
           //route
           console.log("Successful");
-          localStorage.uname=prog.user;
+          localStorage.uname=prog.username;
           this._router.navigate(['home']);
           
         }

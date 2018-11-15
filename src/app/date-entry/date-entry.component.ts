@@ -39,9 +39,13 @@ export class DateEntryComponent implements OnInit {
     if (this.time.hour > 12) {
       this.time.hour = this.time.hour - 12;
     }
-    this._user.saveTime(this.time);
+    this._user.saveTime(this.time).subscribe(()=>{
+      console.log("Done");
+    });
   }
   sendleaves(){
-    this._user.sendLeaves(this.leave_start,this.leave_end);
+    this._user.sendLeaves(this.leave_start,this.leave_end).subscribe(()=>{
+      console.log("Done");
+    });
   }
 }
