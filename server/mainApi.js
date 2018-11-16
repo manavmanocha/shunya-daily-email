@@ -1,43 +1,77 @@
 //This creates Database connection and handle calls from app using databasecall.js
 //It also starts Scheduler for mail using mailer.js
 
-var Cookies = require("cookies");
-var router = require("express").Router();
-var dbcall = require("./databasecall");
-var scheduler=require("./mailer");
+let Cookies = require("cookies");
+let router = require("express").Router();
+let dbController = require("./databasecall");
+let scheduler = require("./mailer").startSchedule;
 
-module.exports =  router;
+module.exports = router;
+let keys = ["keyboard cat"];
 
 //Creating database connection
-dbcall.connect().then(()=>{
-  scheduler.startSchedule();
-}).catch(
-  (err)=>{
+dbController
+  .connect()
+  .then(() => {
+    scheduler();
+  })
+  .catch(err => {
     console.log(err);
-  }
-);
+  });
 
 //Handling Http Client calls
-router.post("/getlogin", function(req, res, next) {
-  var username = req.body.username;
-  var password = req.body.password;
-  var cookies = new Cookies(req, res, { keys: keys });
+router.post("/login", function(req, res, next) {
+  let username = req.body.username;
+  let password = req.body.password;
+  let cookies = new Cookies(req, res, { keys: keys });
   //Logn user
-  dbcall.loginUser(username, password, res, cookies);
+  dbController.loginUser(username, password, res, cookies);
 });
 router.post("/sendleaves", function(req, res, next) {
-  var leaves = req.body.leave;
-  var cookies = new Cookies(req, res, { keys: keys });
-  var id = cookies.get("uid", { signed: true });
+  let leaves = req.body.leave;
+  let cookies = new Cookies(req, res, { keys: keys });
+  let id = cookies.get("uid", { signed: true });
   //Send Leaves
-  dbcall.sendLeaves(id, leaves, res);
+  dbController.sendLeaves(id, leaves, res);
 });
 router.post("/timein", function(req, res, next) {
-  var time = req.body.time;
-  var cookies = new Cookies(req, res, { keys: keys });
-  var id = cookies.get("uid", { signed: true });
+  let time = req.body.time;
+  let cookies = new Cookies(req, res, { keys: keys });
+  let id = cookies.get("uid", { signed: true });
   //Save time
-  dbcall.sendTime(id, time, res);
+  dbController.sendTime(id, time, res);
+
 });
 
+router.post("/createuser", function(req, res, next) {
+  let user = req.body.user;
+  user.password = "Compro11";
+  dbController.createUser(user, res);
+});
 
+router.get("/getusername", function(req, res, next) {
+  dbController.getUsers().then(users => {
+    usernames = [];
+    for (i = 0; i < users.length; i++) {
+      usernames.push(users[i].username);
+    }
+    res.send(usernames);
+  });
+});
+
+router.post("/removeusers", function(req, res, next) {
+  let users = req.body.users;
+  let returnobj = [];
+  let c=0;
+  new Promise(function(resolve, reject) {
+    users.forEach(user => {
+      dbController.removeUser(user, res).then(result => {
+        returnobj.push(result);
+        if(returnobj.length==users.length){resolve(true);}
+      });
+    });
+  }).then(()=>{
+    console.log(returnobj);
+    res.send(returnobj);
+  });
+});

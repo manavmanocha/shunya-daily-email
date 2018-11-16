@@ -1,3 +1,4 @@
+
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -6,14 +7,19 @@ import { HttpClientModule } from '@angular/common/http';
 import { Routes, RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
-import { DateEntryComponent } from './date-entry/date-entry.component';
+import { UserEntryComponent } from './user-entry/user-entry.component';
 import { NavComponent } from './nav/nav.component';
 import { LoginComponent } from './auth/login/login.component';
+import { HomeComponent } from './admin/home/home.component';
 
 import { UserdataService } from './services/userdata.service';
+import { AdminService } from './services/admin.service';
+import { TimeinComponent } from './timein/timein.component';
+import { LeaveComponent } from './leave/leave.component';
 
 const appRoutes: Routes = [
-  { path: "home", component: DateEntryComponent},
+  { path: "home", component: UserEntryComponent},
+  { path: "adminhome", component: HomeComponent},
   { path: "", component: LoginComponent }
 ];
 
@@ -21,9 +27,12 @@ const appRoutes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
-    DateEntryComponent,
+    UserEntryComponent,
     NavComponent,
-    LoginComponent
+    LoginComponent,
+    HomeComponent,
+    TimeinComponent,
+    LeaveComponent
   ],
   imports: [
     BrowserModule,
@@ -32,7 +41,7 @@ const appRoutes: Routes = [
     NgbModule,
     HttpClientModule 
   ],
-  providers: [UserdataService],
+  providers: [UserdataService, AdminService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

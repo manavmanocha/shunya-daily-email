@@ -1,8 +1,8 @@
-var express = require("express");
-var path = require("path");
-var bodyParser = require("body-parser");
-var api = require("./mainApi");
-var app = express();
+let express = require("express");
+let path = require("path");
+let bodyParser = require("body-parser");
+let api = require("./mainApi");
+let app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: "false" }));
