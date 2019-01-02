@@ -7,8 +7,14 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Launch Program 1",
+            "program": "${workspaceFolder}/server/index.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}\\server\\app",
+            "program": "${workspaceFolder}\\server\\index",
             "preLaunchTask": "tsc: build - tsconfig.json",
             "outFiles": [
                 "${workspaceFolder}/dist/out-tsc/**/*.js"

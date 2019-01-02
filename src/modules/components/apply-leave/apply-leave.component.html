@@ -1,0 +1,40 @@
+<div class="row m-0">
+  <div class="my-4 mx-auto col-sm-6 card p-0">
+    <div class="m-auto card-body w-100">
+      <h5 class="card-title text-center">Leave Entry</h5>
+      <div id="calender-container">
+        <form class="py-4 form-inline">
+          <ngb-datepicker
+            class="mx-auto"
+            #dp
+            (select)="onDateSelection($event)"
+            [displayMonths]="2"
+            [dayTemplate]="dateTemp"
+            outsideDays="hidden"
+          >
+          </ngb-datepicker>
+
+          <ng-template #dateTemp let-date let-focused="focused">
+            <span
+              class="user-day"
+              [class.disabled]="isDisabled(date)"
+              [class.focused]="focused && !isDisabled(date)"
+              [class.range]="isRange(date)"
+              [class.faded]="isHovered(date) || isInside(date)"
+              (mouseenter)="hoveredDate = date"
+              (mouseleave)="hoveredDate = null"
+            >
+              {{ date.day }}
+            </span>
+          </ng-template>
+        </form>
+      </div>
+    </div>
+
+    <div class="card-footer text-center">
+      <button (click)="sendleaves()" class="btn btn-primary">
+        Apply Leave
+      </button>
+    </div>
+  </div>
+</div>
