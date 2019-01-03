@@ -22,21 +22,37 @@ export class LeaveStatusComponent implements OnInit {
 
   getmyLeaves() {
     this.unavailableDates = [];
-    this.leaveService.getLeaves().subscribe(leaves => {
-      this.unavailableDates = leaves;
+    this.leaveService.getLeaves().subscribe((response:any) => {
+      if(response.status)
+      this.unavailableDates = response.leaves;
+      else{
+        const modalRef = this.modalService.open(MsgModalComponent);
+        modalRef.componentInstance.title = "Leave Application";
+        if (response.hasOwnProperty("errObject")) {
+          modalRef.componentInstance.msgText = response.errObject.MESSAGE;
+        } else {
+          modalRef.componentInstance.msgText =
+            "Some Error has occured. Please try again later ";
+        }
+      }
     });
   }
   cancelMyLeave(leave_app: any) {
     this.leaveService
       .cancelLeaves(leave_app.type, leave_app.id)
-      .subscribe(res => {
+      .subscribe((res:any) => {
         const modalRef = this.modalService.open(MsgModalComponent);
         modalRef.componentInstance.title = "Leave Application";
-        if (res) {
+        if (res.status) {
           modalRef.componentInstance.msgText = "Cancelled Successfully";
           this.getmyLeaves();
         } else {
-          modalRef.componentInstance.msgText = "Some Error has occured";
+          if (res.hasOwnProperty("errObject")) {
+            modalRef.componentInstance.msgText = res.errObject.MESSAGE;
+          } else {
+            modalRef.componentInstance.msgText =
+              "Some Error has occured. Please try again later ";
+          }
         }
       });
   }

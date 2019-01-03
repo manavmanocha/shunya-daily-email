@@ -7,7 +7,7 @@
           type="text"
           id="username"
           name="username"
-          placeholder="Full name"
+          placeholder="User name"
           [(ngModel)]="user.username"
           class="form-control my-2 p-2"
           required
@@ -17,7 +17,7 @@
           class="m-2 help-block"
           *ngIf="username.touched && username.errors?.required"
         >
-          Full name is required
+          User name is required
         </span>
         <input
           type="text"

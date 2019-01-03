@@ -30,30 +30,38 @@ exports.approveTheLeave = approveTheLeave;
 exports.unapproveTheLeave = unapproveTheLeave;
 exports.rejectTheLeave = rejectTheLeave;
 exports.cancelLeaves = cancelLeaves;
-exports.getmyLeaveRecord= getmyLeaveRecord;
+exports.getmyLeaveRecord = getmyLeaveRecord;
 /**************************************************
  * Update Leaves for the user
  **************************************************/
 function updateLeaves(user, leave, res) {
-  db().collection(appconfig.database.collections.leaveCollection, function(
-    err,
-    collection
-  ) {
-    assert.equal(null, err);
-    try {
-      (timestamp = new Timestamp(0, Math.floor(new Date().getTime() / 1000))),
-        (updateobj =
-          appconfig.database.documents.leaves.applyParentNode + timestamp);
-      collection.updateOne(
-        { user: user },
-        { $set: { [updateobj]: leave } },
-        { upsert: true }
-      );
-      res.send(true);
-    } catch (e) {
-      res.send(false);
-    }
-  });
+  try {
+    return new Promise(function(resolve, reject) {
+      db().collection(appconfig.database.collections.leaveCollection, function(
+        err,
+        collection
+      ) {
+        if (err) {
+          console.log("Update Leaves");
+          console.log(err);
+          reject(ERROR_TYPES.UPDATE_LEAVES.COLLECTION);
+        }
+        (timestamp = new Timestamp(0, Math.floor(new Date().getTime() / 1000))),
+          (updateobj =
+            appconfig.database.documents.leaves.applyParentNode + timestamp);
+        collection.updateOne(
+          { user: user },
+          { $set: { [updateobj]: leave } },
+          { upsert: true }
+        );
+        resolve(true);
+      });
+    });
+  } catch (err) {
+    console.log("Check User");
+    console.log(err);
+    reject(err);
+  }
 }
 
 /**************************************************
@@ -62,49 +70,73 @@ function updateLeaves(user, leave, res) {
 function sendLeaves(id, leaves, res) {
   getUsername(id)
     .then(username => {
-      updateLeaves(username, leaves, res);
+      updateLeaves(username, leaves, res)
+        .then(() => {
+          res.send({
+            status: true
+          });
+        })
+        .catch(response => {
+          res.send({
+            status: false,
+            errObject: response
+          });
+        });
     })
-    .catch(e => {
-      res.send(false);
+    .catch(err => {
+      res.send({
+        status: false,
+        errObject: err
+      });
     });
 }
 
 /**************************************************
  * Get Leaves using username
  **************************************************/
-function getmyLeaves(user) {
+function getmyLeaves(id) {
   return new Promise(function(resolve, reject) {
-    db().collection(appconfig.database.collections.leaveCollection, function(
-      err,
-      collection
-    ) {
-      collection.findOne({ user: user }, function(err, data) {
-        if (err || !data) {
-          assert.equal(null, err);
-          reject(err);
-        } else {
-          let leaves = [];
-          if (data.approved != undefined) {
-            Object.entries(data.approved).forEach(([key, value]) => {
-              value.type = "A";
-              value.id = key;
-              leaves.push(value);
+    getUsername(id)
+      .then(user => {
+        db().collection(
+          appconfig.database.collections.leaveCollection,
+          function(err, collection) {
+            collection.findOne({ user: user }, function(err, data) {
+              if (err || !data) {
+                if (err) {
+                  reject(ERROR_TYPES.GET_LEAVES.COLLECTION);
+                }
+              } else {
+                let leaves = [];
+                if (data.approved != undefined) {
+                  Object.entries(data.approved).forEach(([key, value]) => {
+                    value.type = "A";
+                    value.id = key;
+                    leaves.push(value);
+                  });
+                }
+                if (data.pending != undefined) {
+                  Object.entries(data.pending).forEach(([key, value]) => {
+                    value.type = "P";
+                    value.id = key;
+                    leaves.push(value);
+                  });
+                }
+                resolve(leaves);
+              }
             });
           }
-          if (data.pending != undefined) {
-            Object.entries(data.pending).forEach(([key, value]) => {
-              value.type = "P";
-              value.id = key;
-              leaves.push(value);
-            });
-          }
-          resolve(leaves);
-        }
+        );
+      })
+      .catch(err => {
+        console.log("Get my leaves");
+        res.send({
+          status: false,
+          errObject: err
+        });
       });
-    });
   });
 }
-
 
 /**************************************************
  * Get Leave Record using username
@@ -116,9 +148,11 @@ function getmyLeaveRecord(user) {
       collection
     ) {
       collection.findOne({ user: user }, function(err, data) {
-        if (err || !data) {
-          assert.equal(null, err);
-          reject(err);
+        if (err) {
+          reject(ERROR_TYPES.RECORD_LEAVES.COLLECTION);
+        }
+        if (!data) {
+          resolve(1);
         } else {
           let leaves = [];
           if (data.approved != undefined) {
@@ -141,12 +175,14 @@ async function getPendingLeaves() {
       err,
       collection
     ) {
-      assert.equal(null, err);
+      if (err) {
+        reject(ERROR_TYPES.PENDING_LEAVES.COLLECTION);
+      }
       let leave = [];
       collection.find({}, { pending: 1, user: 1, _id: 0 }).forEach(
         function(data) {
           if (!data) {
-            assert.equal(null, err);
+            reject(ERROR_TYPES.PENDING_LEAVES.EMPTY);
           } else {
             if (data.pending != undefined) {
               leave.push({ name: data.user, dates: data.pending });
@@ -161,7 +197,6 @@ async function getPendingLeaves() {
   });
 }
 
-
 /**************************************************
  * Get Approved Leaves
  **************************************************/
@@ -171,12 +206,14 @@ async function getApprovedLeaves() {
       err,
       collection
     ) {
-      assert.equal(null, err);
+      if (err) {
+        reject(ERROR_TYPES.APPROVED_LEAVES.COLLECTION);
+      }
       let approvedleave = [];
       collection.find({}, { approved: 1, user: 1, _id: 0 }).forEach(
         function(data) {
           if (!data) {
-            assert.equal(null, err);
+            reject(ERROR_TYPES.APPROVED_LEAVES.EMPTY);
           } else {
             if (data.approved != undefined) {
               approvedleave.push({ name: data.user, dates: data.approved });
@@ -191,66 +228,73 @@ async function getApprovedLeaves() {
   });
 }
 
-
 /**************************************************
  * Approve the Leaves (move from pending to approved)
  **************************************************/
 function approveTheLeave(leave_app, res) {
-  db().collection(appconfig.database.collections.leaveCollection, function(
-    err,
-    collection
-  ) {
-    assert.equal(null, err);
-    try {
-      timestamp = new Timestamp(0, Math.floor(new Date().getTime() / 1000));
-      let removeobj =
-        appconfig.database.documents.leaves.applyParentNode + leave_app.id;
-      collection.updateOne(
-        { user: leave_app.name },
-        { $unset: { [removeobj]: "" } }
-      );
-      updateobj =
-        appconfig.database.documents.leaves.approveParentNode + timestamp;
-      collection.updateOne(
-        { user: leave_app.name },
-        { $set: { [updateobj]: leave_app.dates } },
-        { upsert: true }
-      );
-      res.send(true);
-    } catch (e) {
-      res.send(false);
-    }
+  return new Promise(function(resolve, reject) {
+    db().collection(appconfig.database.collections.leaveCollection, function(
+      err,
+      collection
+    ) {
+      if (err) {
+        reject(ERROR_TYPES.APPROVE_LEAVES.COLLECTION);
+      }
+      try {
+        timestamp = new Timestamp(0, Math.floor(new Date().getTime() / 1000));
+        let removeobj =
+          appconfig.database.documents.leaves.applyParentNode + leave_app.id;
+        collection.updateOne(
+          { user: leave_app.name },
+          { $unset: { [removeobj]: "" } }
+        );
+        updateobj =
+          appconfig.database.documents.leaves.approveParentNode + timestamp;
+        collection.updateOne(
+          { user: leave_app.name },
+          { $set: { [updateobj]: leave_app.dates } },
+          { upsert: true }
+        );
+        resolve(1);
+      } catch (e) {
+        reject(ERROR_TYPES.APPROVE_LEAVES.UPDATE);
+      }
+    });
   });
 }
 
 /**************************************************
  * Unapprove the Leaves (move from approved to pending)
  **************************************************/
-function unapproveTheLeave(leave_app, res) {
-  db().collection(appconfig.database.collections.leaveCollection, function(
-    err,
-    collection
-  ) {
-    assert.equal(null, err);
-    try {
-      timestamp = new Timestamp(0, Math.floor(new Date().getTime() / 1000));
-      let removeobj =
-        appconfig.database.documents.leaves.approveParentNode + leave_app.id;
-      collection.updateOne(
-        { user: leave_app.name },
-        { $unset: { [removeobj]: "" } }
-      );
-      updateobj =
-        appconfig.database.documents.leaves.applyParentNode + timestamp;
-      collection.updateOne(
-        { user: leave_app.name },
-        { $set: { [updateobj]: leave_app.dates } },
-        { upsert: true }
-      );
-      res.send(true);
-    } catch (e) {
-      res.send(false);
-    }
+function unapproveTheLeave(leave_app) {
+  return new Promise(function(resolve, reject) {
+    db().collection(appconfig.database.collections.leaveCollection, function(
+      err,
+      collection
+    ) {
+      if (err) {
+        reject(ERROR_TYPES.UNAPPROVE_LEAVE.COLLECTION);
+      }
+      try {
+        timestamp = new Timestamp(0, Math.floor(new Date().getTime() / 1000));
+        let removeobj =
+          appconfig.database.documents.leaves.approveParentNode + leave_app.id;
+        collection.updateOne(
+          { user: leave_app.name },
+          { $unset: { [removeobj]: "" } }
+        );
+        updateobj =
+          appconfig.database.documents.leaves.applyParentNode + timestamp;
+        collection.updateOne(
+          { user: leave_app.name },
+          { $set: { [updateobj]: leave_app.dates } },
+          { upsert: true }
+        );
+        resolve(1);
+      } catch (e) {
+        reject(ERROR_TYPES.UNAPPROVE_LEAVE.UPDATE);
+      }
+    });
   });
 }
 
@@ -258,58 +302,74 @@ function unapproveTheLeave(leave_app, res) {
  * Reject the Leaves (move from pending to rejected)
  **************************************************/
 function rejectTheLeave(leave_app, res) {
-  db().collection(appconfig.database.collections.leaveCollection, function(
-    err,
-    collection
-  ) {
-    assert.equal(null, err);
-    try {
-      timestamp = new Timestamp(0, Math.floor(new Date().getTime() / 1000));
-      let removeobj =
-        appconfig.database.documents.leaves.applyParentNode + leave_app.id;
-      collection.updateOne(
-        { user: leave_app.name },
-        { $unset: { [removeobj]: "" } }
-      );
-      updateobj =
-        appconfig.database.documents.leaves.rejectParentNode + timestamp;
-      collection.updateOne(
-        { user: leave_app.name },
-        { $set: { [updateobj]: leave_app.dates } },
-        { upsert: true }
-      );
-      res.send(true);
-    } catch (e) {
-      res.send(false);
-    }
+  return new Promise(function(resolve, reject) {
+    db().collection(appconfig.database.collections.leaveCollection, function(
+      err,
+      collection
+    ) {
+      if (err) {
+        reject(ERROR_TYPES.REJECT_LEAVE.COLLECTION);
+      }
+      try {
+        timestamp = new Timestamp(0, Math.floor(new Date().getTime() / 1000));
+        let removeobj =
+          appconfig.database.documents.leaves.applyParentNode + leave_app.id;
+        collection.updateOne(
+          { user: leave_app.name },
+          { $unset: { [removeobj]: "" } }
+        );
+        updateobj =
+          appconfig.database.documents.leaves.rejectParentNode + timestamp;
+        collection.updateOne(
+          { user: leave_app.name },
+          { $set: { [updateobj]: leave_app.dates } },
+          { upsert: true }
+        );
+        resolve(1);
+      } catch (e) {
+        reject(ERROR_TYPES.REJECT_LEAVE.UPDATE);
+      }
+    });
   });
 }
 
 /**************************************************
  * Cancel the Leaves (delete from collection)
  **************************************************/
-function cancelLeaves(cancel_app, res) {
-  db().collection(appconfig.database.collections.leaveCollection, function(
-    err,
-    collection
-  ) {
-    assert.equal(null, err);
+function cancelLeaves(cancel_app, id) {
+  return new Promise(function(resolve, reject) {
     try {
-      let removeobj;
-      if (cancel_app.type == "A") {
-        removeobj =
-          appconfig.database.documents.leaves.approveParentNode + cancel_app.id;
-      } else if (cancel_app.type == "P") {
-        removeobj =
-          appconfig.database.documents.leaves.applyParentNode + cancel_app.id;
-      }
-      collection.updateOne(
-        { user: cancel_app.name },
-        { $unset: { [removeobj]: "" } }
-      );
-      res.send(true);
-    } catch (e) {
-      res.send(false);
+      getUsername(id)
+        .then(user => {
+          db().collection(
+            appconfig.database.collections.leaveCollection,
+            function(err, collection) {
+              if (err) {
+                reject(ERROR_TYPES.CANCEL_LEAVES.COLLECTION);
+              }
+              let removeobj;
+              if (cancel_app.type == "A") {
+                removeobj =
+                  appconfig.database.documents.leaves.approveParentNode +
+                  cancel_app.id;
+              } else if (cancel_app.type == "P") {
+                removeobj =
+                  appconfig.database.documents.leaves.applyParentNode +
+                  cancel_app.id;
+              }
+              collection.updateOne(
+                { user: user },
+                { $unset: { [removeobj]: "" } }
+              );
+              resolve(1);
+            }
+          );
+        })
+        .catch(err => {
+          reject(err);
+        });
+    } catch (err) {
+      reject(err);
     }
   });
 }

@@ -1,4 +1,3 @@
-
 /**************************************************
  * Include external modules
  **************************************************/
@@ -12,6 +11,7 @@ const MongoClient = require("mongodb").MongoClient;
  **************************************************/
 
 let appconfig = require("../config/app-config");
+let ERROR_TYPES = require("../errorHandler/error-constants").ERROR_TYPES;
 
 /**************************************************
  * Exports
@@ -54,28 +54,41 @@ function connect() {
  **************************************************/
 
 async function getUsername(id) {
-  return new Promise(function(resolve, reject) {
-    db.collection(appconfig.database.collections.userCollection, function(
-      err,
-      collection
-    ) {
-      assert.equal(null, err);
-      collection.findOne({ _id: ObjectID(id) }, function(err, data) {
-        if (err || !data) {
-          assert.equal(null, err);
-          reject(err);
-        } else {
-          resolve(data.username);
+  try {
+    return new Promise(function(resolve, reject) {
+      db.collection(appconfig.database.collections.userCollection, function(
+        err,
+        collection
+      ) {
+        if (err) {
+          console.log("Get Username");
+          console.log(err);
+          reject(ERROR_TYPES.GET_USERNAME.COLLECTION);
         }
+        collection.findOne({ _id: ObjectID(id) }, function(err, data) {
+          if (err) {
+            console.log("Get Username");
+            console.log(err);
+            reject(ERROR_TYPES.GET_USERNAME.COLLECTION);
+          } else if (!data) {
+            reject(ERROR_TYPES.GET_USERNAME.SESSION);
+          } else {
+            resolve(data.username);
+          }
+        });
       });
     });
-  });
+  } catch (err) {
+    console.log("Get Username");
+    console.log(err);
+    reject(err);
+  }
 }
 
 /**************************************************
  * Get Database Reference
  **************************************************/
 
- exports.getDBreference =function(){
+exports.getDBreference = function() {
   return db;
-}
+};

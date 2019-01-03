@@ -37,26 +37,32 @@ function viewYearly(view) {
       let startid = "" + idFromDate(startdate);
       let endid = "" + idFromDate(enddate);
       let reportData = [];
-      collection.find(
-        {
+      collection
+        .find({
           $and: [
             { _id: { $gte: ObjectID(startid) } },
             { _id: { $lte: ObjectID(endid) } }
           ]
-        }).forEach(
-        function(data) {
-          if (err || !data) {
-            assert.equal(null, err);
-            reject(err);
-          } else {
-            if(data.timein[view.user]!=undefined)
-            reportData.push({date:data.date,timein:data.timein[view.user]});
+        })
+        .forEach(
+          function(data) {
+            if (err) {
+              console.log(err);
+              reject(ERROR_TYPES.YEARLY_REPORT.ERROR);
+            } else if (!data) {
+              reject(ERROR_TYPES.YEARLY_REPORT.DATA_NOT_PRESENT);
+            } else {
+              if (data.timein[view.user] != undefined)
+                reportData.push({
+                  date: data.date,
+                  timein: data.timein[view.user]
+                });
+            }
+          },
+          function() {
+            resolve(reportData);
           }
-        },
-        function() {
-          resolve(reportData);
-        }
-      );
+        );
     });
   });
 }
@@ -65,38 +71,56 @@ function viewYearly(view) {
  *Get monthly report data for user
  **************************************************/
 function viewMonthly(view) {
-    return new Promise(function(resolve, reject) {
-      db().collection(appconfig.database.collections.timeInCollection, function(
-        err,
-        collection
-      ) {
-        let allmonths= ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-        let startdate = new Date(view.year, allmonths.indexOf(view.month), 1);
-        let enddate = new Date(view.year, allmonths.indexOf(view.month), 31);
-        let startid = "" + idFromDate(startdate);
-        let endid = "" + idFromDate(enddate);
-        let reportData = [];
-        collection.find(
-          {
-            $and: [
-              { _id: { $gte: ObjectID(startid) } },
-              { _id: { $lte: ObjectID(endid) } }
-            ]
-          }).forEach(
+  return new Promise(function(resolve, reject) {
+    db().collection(appconfig.database.collections.timeInCollection, function(
+      err,
+      collection
+    ) {
+      let allmonths = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+      ];
+      let startdate = new Date(view.year, allmonths.indexOf(view.month), 1);
+      let enddate = new Date(view.year, allmonths.indexOf(view.month), 31);
+      let startid = "" + idFromDate(startdate);
+      let endid = "" + idFromDate(enddate);
+      let reportData = [];
+      collection
+        .find({
+          $and: [
+            { _id: { $gte: ObjectID(startid) } },
+            { _id: { $lte: ObjectID(endid) } }
+          ]
+        })
+        .forEach(
           function(data) {
-            if (err || !data) {
-              assert.equal(null, err);
-              reject(err);
+            if (err) {
+              console.log(err);
+              reject(ERROR_TYPES.YEARLY_REPORT.ERROR);
+            } else if (!data) {
+              reject(ERROR_TYPES.MONTHLY_REPORT.DATA_NOT_PRESENT);
             } else {
-              if(data.timein[view.user]!=undefined)
-              reportData.push({date:data.date,timein:data.timein[view.user]});
+              if (data.timein[view.user] != undefined)
+                reportData.push({
+                  date: data.date,
+                  timein: data.timein[view.user]
+                });
             }
           },
           function() {
             resolve(reportData);
           }
         );
-      });
     });
-  }
-  
+  });
+}

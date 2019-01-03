@@ -1,3 +1,4 @@
+import { AuthGuard } from './gaurds/auth.guard';
 import { CreateUserComponent } from "./components/create-user/create-user.component";
 import { LoginComponent } from "./components/login/login.component";
 import { Routes } from "@angular/router";
@@ -16,6 +17,7 @@ import { ForgotPasswordComponent } from "./components/forgot-password/forgot-pas
 import { RemoveUserComponent } from "./components/remove-user/remove-user.component";
 import { AdminComponent } from "./components/admin/admin.component";
 import { UserComponent } from "./components/user/user.component";
+import { LoggedGuard } from './gaurds/logged.guard';
 
 export const appRoutes: Routes = [
   {
@@ -24,11 +26,11 @@ export const appRoutes: Routes = [
   },
   {
     path: "",
-    component: LoginComponent
+     redirectTo: 'login', pathMatch: 'full'
   },
   {
     path: "login",
-    component: LoginComponent
+    component: LoginComponent,canActivate: [ LoggedGuard ] 
   },
   {
     path: "forgot-password",
@@ -36,7 +38,7 @@ export const appRoutes: Routes = [
   },
   {
     path: "user",
-    component: UserComponent,
+    component: UserComponent, canActivate: [ AuthGuard ] ,
     children: [
       { path: "home", component: UserHomeComponent },
       { path: "time-in", component: TimeinComponent },
@@ -50,7 +52,7 @@ export const appRoutes: Routes = [
   },
   {
     path: "admin",
-    component: AdminComponent ,
+    component: AdminComponent, canActivate: [ AuthGuard ] ,
     children: [
       { path: "home", component: AdminHomeComponent },
       { path: "manage-leaves", component: ManageLeavesComponent },

@@ -17,16 +17,21 @@ export class CreateUserComponent implements OnInit {
 
   ngOnInit() {}
   create(user,createForm): void {
-    this._manageUserService.createUser(user).subscribe(prog => {
+    this._manageUserService.createUser(user).subscribe((res:any) => {
       const modalRef = this.modalService.open(MsgModalComponent);
       modalRef.componentInstance.title = "User Creation";
-      if (prog) {
+      if (res.status) {
         this.user.username="";
         this.user.email="";
         modalRef.componentInstance.msgText = "User successfully created";
         createForm.reset();
       } else {
-        modalRef.componentInstance.msgText = "Some Error has occured (Maybe username and Email exists). Please try again later";
+        if (res.hasOwnProperty("errObject")) {
+          modalRef.componentInstance.msgText = res.errObject.MESSAGE;
+        } else {
+          modalRef.componentInstance.msgText =
+            "Some Error has occured. Please try again later ";
+        }
       }
     });
   }

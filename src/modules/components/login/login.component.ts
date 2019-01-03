@@ -7,7 +7,7 @@ import { LoginService } from "../../services/login.service";
   templateUrl: "./login.component.html",
   styleUrls: ["./login.component.css"]
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
   loader=false;
   rotate=true;
   fail = false;
@@ -19,17 +19,6 @@ export class LoginComponent implements OnInit {
     private _loginser: LoginService,
     private _router: Router
   ) {}
-
-  ngOnInit() {
-    this._loginser.checklogged().subscribe(res => {
-      if (res) {
-        if (localStorage.getItem("AUser")) this._router.navigate(["admin/home"]);
-        else {
-          this._router.navigate(["user/home"]);
-        }
-      }
-    });
-  }
 
   rotateloader(){
     this.loader= !this.loader;

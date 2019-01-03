@@ -11,7 +11,7 @@ const assert = require("assert");
 let db = require("./databasecall-controller").getDBreference;
 let getUsername = require("./databasecall-controller").getUsername;
 let appconfig = require("../config/app-config");
-
+let ERROR_TYPES = require("../errorHandler/error-constants").ERROR_TYPES;
 /**************************************************
  * Exports
  **************************************************/
@@ -22,13 +22,17 @@ exports.getTime = getTime;
  * Update time for the user
  **************************************************/
 function updateTime(user, time) {
-  return new Promise(function(resolve, reject) {
-    db().collection(appconfig.database.collections.timeInCollection, function(
-      err,
-      collection
-    ) {
-      assert.equal(null, err);
-      try {
+  try {
+    return new Promise(function(resolve, reject) {
+      db().collection(appconfig.database.collections.timeInCollection, function(
+        err,
+        collection
+      ) {
+        if (err) {
+          console.log("Update time");
+          console.log(err);
+          reject(ERROR_TYPES.UPDATE_TIME.COLLECTION);
+        }
         date = new Date();
         stringdate =
           (date.getDate() < 10 ? "0" : "") +
@@ -44,25 +48,29 @@ function updateTime(user, time) {
           { upsert: true }
         );
         resolve(1);
-      } catch (e) {
-        console.log("Update Time Error");
-        reject(e);
-      }
+      });
     });
-  });
+  } catch (err) {
+    console.log("Update Time Error Catch");
+    console.log(err);
+    reject(ERROR_TYPES.UPDATE_TIME.UPDATE);
+  }
 }
 
 /**************************************************
  * Get time for the user
  **************************************************/
 function findTime(user) {
-  return new Promise(function(resolve, reject) {
-    db().collection(appconfig.database.collections.timeInCollection, function(
-      err,
-      collection
-    ) {
-      assert.equal(null, err);
-      try {
+  try {
+    return new Promise(function(resolve, reject) {
+      db().collection(appconfig.database.collections.timeInCollection, function(
+        err,
+        collection
+      ) {
+        if (err) {
+          console.log(err);
+          reject(ERROR_TYPES.FIND_TIME.COLLECTION);
+        }
         date = new Date();
         stringdate =
           (date.getDate() < 10 ? "0" : "") +
@@ -72,19 +80,24 @@ function findTime(user) {
           "-" +
           date.getFullYear();
         collection.findOne({ date: stringdate }, function(err, data) {
-          if (err || !data) {
-            assert.equal(null, err);
-            reject(false);
-          } else {
+          if (err) {
+            console.log(err);
+          reject(ERROR_TYPES.FIND_TIME.COLLECTION);
+          } 
+          else if(!data){
+            resolve(false);
+          }
+          else {
             resolve(data.timein[user]);
           }
         });
-      } catch (e) {
-        console.log("Find Time Error");
-        reject(e);
-      }
+      });
     });
-  });
+  } catch (err) {
+    console.log("Find Time Error Catch");
+    console.log(err);
+    reject(err);
+  }
 }
 
 /**************************************************
@@ -94,17 +107,15 @@ function saveTime(id, time, res) {
   getUsername(id)
     .then(username => {
       updateTime(username, time).then(() => {
-        res.send({ type: "Response", status: true });
+        res.send({ status: true });
       });
     })
-    .catch(e => {
-      res.send({
-        type: "Timein Error",
-        status: false,
-        value: "Id not matched"
-      });
+    .catch(err => {
       console.log("Save Time Error");
-      console.log(e);
+      res.send({
+        status: false,
+        errObject: err
+      });
     });
 }
 
@@ -116,19 +127,17 @@ function getTime(id, res) {
     .then(username => {
       findTime(username).then(value => {
         if (value) {
-          res.send({ type: "Response", status: true, time: value });
+          res.send({status: true, time: value });
         } else {
-          res.send({ type: "Response", status: false });
+          res.send({ status: false });
         }
       });
     })
-    .catch(e => {
+    .catch(err => {
       console.log("Get Time Error");
-      console.log(e);
       res.send({
-        type: "Get Time Error",
         status: false,
-        value: "Id not matched"
+        errObject: err
       });
     });
 }

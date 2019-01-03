@@ -30,16 +30,14 @@ export class TimeinComponent implements OnInit {
 
   getTime() {
     this.timeService.getTime().subscribe((res: any) => {
-      if (res.type == "Response" && res.status) {
+      if (res.status) {
         this.todayentry = res.time;
       } else {
-        if (res.hasOwnProperty("value") && res.value == "Id not found") {
+        if (res.hasOwnProperty("errObject")) {
           const modalRef = this.modalService.open(MsgModalComponent);
           modalRef.componentInstance.title = "Time in";
-          modalRef.componentInstance.msgText =
-            "Sorry, your session is lost. Please re-login in system and try again";
+          modalRef.componentInstance.msgText = res.errObject.MESSAGE;
         }
-        console.log(res);
       }
     });
   }
@@ -65,21 +63,19 @@ export class TimeinComponent implements OnInit {
     this.timeService.saveTime(this.time).subscribe((res: any) => {
       const modalRef = this.modalService.open(MsgModalComponent);
       modalRef.componentInstance.title = "Time in";
-      if (res.type == "Response" && res.status) {
+      if (res.status) {
         this.todayentry =
           this.time.hour + ":" + this.time.minute + " " + this.time.meridian;
         modalRef.componentInstance.msgText = "Saved Successfully";
         this.loader = false;
       } else {
-        if (res.hasOwnProperty("value") && res.value == "Id not found") {
-          modalRef.componentInstance.msgText =
-            "Sorry, your session is lost. Please re-login in system and try again";
+        if (res.hasOwnProperty("errObject")) {
+          modalRef.componentInstance.msgText = res.errObject.MESSAGE;
         } else {
           modalRef.componentInstance.msgText =
             "Some Error has occured. Please try again later ";
         }
         this.loader = false;
-        console.log(res);
       }
     });
   }

@@ -29,20 +29,24 @@ export class ChangeUsernameComponent implements OnInit {
   }
 
   changeUsername(user, changeUsernameForm): void {
-    this._manageProfileService.changeUsername(user).subscribe(prog => {
+    this._manageProfileService.changeUsername(user).subscribe((res:any) => {
       const modalRef = this.modalService.open(MsgModalComponent);
       modalRef.componentInstance.title = "Username Update";
-      if (prog) {
+      if (res.status) {
         localStorage.setItem("uname", user.newusername);
         modalRef.componentInstance.msgText = "Username successfully updated";
         changeUsernameForm.reset();
         this.user.password = null;
         this.user.newusername = null;
       } else {
-        modalRef.componentInstance.msgText =
-          "Some Error has occured (Maybe password is incorrect). Please try again later";
+        if (res.hasOwnProperty("errObject")) {
+          modalRef.componentInstance.msgText = res.errObject.MESSAGE;
+        } else {
+          modalRef.componentInstance.msgText =
+            "Some Error has occured. Please try again later ";
+        }
       }
-      this.setusername();
+      setTimeout(()=>{ this.setusername(); });
     });
   }
 }

@@ -32,12 +32,22 @@ export class ApplyLeaveComponent implements OnInit {
   }
 
   getmyLeaves() {
-    this.leaveService.getLeaves().subscribe(leaves => {
-      this.unavailableDates = leaves;
-      console.log(leaves);
-      //add validation today disable then select next
-      this.fromDate = this.calendar.getToday();
-      this.toDate = this.calendar.getToday();
+    this.leaveService.getLeaves().subscribe((response: any) => {
+      if (response.status) {
+        this.unavailableDates = response.leaves;
+        //add validation today disable then select next
+        this.fromDate = this.calendar.getToday();
+        this.toDate = this.calendar.getToday();
+      } else {
+        const modalRef = this.modalService.open(MsgModalComponent);
+        modalRef.componentInstance.title = "Leave Application";
+        if (response.hasOwnProperty("errObject")) {
+          modalRef.componentInstance.msgText = response.errObject.MESSAGE;
+        } else {
+          modalRef.componentInstance.msgText =
+            "Some Error has occured. Please try again later ";
+        }
+      }
     });
   }
 
@@ -112,17 +122,24 @@ export class ApplyLeaveComponent implements OnInit {
     });
     return disabled || date.before(this.calendar.getToday());
   }
-  
+
   sendleaves() {
-    this.leaveService.sendLeaves(this.fromDate, this.toDate).subscribe((res) => {
-      const modalRef = this.modalService.open(MsgModalComponent);
-      modalRef.componentInstance.title = "Leave Application";
-      if (res) {
-        modalRef.componentInstance.msgText = "Applied Successfully";
-      } else {
-        modalRef.componentInstance.msgText = "Some Error has occured";
-      }
-      this.getmyLeaves();
-    });
+    this.leaveService
+      .sendLeaves(this.fromDate, this.toDate)
+      .subscribe((res: any) => {
+        const modalRef = this.modalService.open(MsgModalComponent);
+        modalRef.componentInstance.title = "Leave Application";
+        if (res.status) {
+          modalRef.componentInstance.msgText = "Applied Successfully";
+        } else {
+          if (res.hasOwnProperty("errObject")) {
+            modalRef.componentInstance.msgText = res.errObject.MESSAGE;
+          } else {
+            modalRef.componentInstance.msgText =
+              "Some Error has occured. Please try again later ";
+          }
+        }
+        this.getmyLeaves();
+      });
   }
 }

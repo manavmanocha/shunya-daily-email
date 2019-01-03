@@ -22,8 +22,7 @@ export class LeaveService {
   }
 
   getLeaves(): Observable<Array<{}>>{
-    let user=localStorage.getItem("uname");
-    return this.httpClient.post<Array<{}>>('/api/getLeaves',{user:user});    
+    return this.httpClient.get<Array<{}>>('/api/getLeaves');    
   }
 
   cancelLeaves(type,id): Observable<boolean>{

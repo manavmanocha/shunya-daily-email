@@ -65,13 +65,16 @@ export class ReportComponent implements OnInit {
       i++;
     }
   }
-
   printnames() {
     this.allUsernames = [];
     this.manageUserService.getUsernames().subscribe(res => {
       res.forEach(item => {
         this.allUsernames.push({ name: item, selected: false });
       });
+      if(this.allUsernames.length > 0) {
+        this.view.user = this.allUsernames[0];
+      } 
+        
     });
   }
   viewReport(): void {

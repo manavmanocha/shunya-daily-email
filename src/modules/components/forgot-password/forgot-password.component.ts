@@ -23,14 +23,19 @@ export class ForgotPasswordComponent implements OnInit {
   }
   sendmail() {
     this.loader=true;
-    this.manageProfileService.forgotpassword(this.emailid).subscribe(res => {
+    this.manageProfileService.forgotpassword(this.emailid).subscribe((res:any) => {
       const modalRef = this.modalService.open(MsgModalComponent);
       modalRef.componentInstance.title = "Forgot Password";
-      if (res) {
+      if (res.status) {
         modalRef.componentInstance.msgText = "Mail sent";
         this.loader=false;
       } else {
-        modalRef.componentInstance.msgText = "Some Error has occured. Please try again later";
+        if (res.hasOwnProperty("errObject")) {
+          modalRef.componentInstance.msgText = res.errObject.MESSAGE;
+        } else {
+          modalRef.componentInstance.msgText =
+            "Some Error has occured. Please try again later ";
+        }
         this.loader=false;
       }
     });

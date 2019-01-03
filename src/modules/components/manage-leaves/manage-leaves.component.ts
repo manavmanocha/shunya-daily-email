@@ -58,43 +58,57 @@ export class ManageLeavesComponent implements OnInit {
   }
 
   approveTheLeave(leave_app) {
-    this.manageLeaveService.approveTheLeave(leave_app).subscribe(res => {
+    this.manageLeaveService.approveTheLeave(leave_app).subscribe((res: any) => {
       const modalRef = this.modalService.open(MsgModalComponent);
       modalRef.componentInstance.title = "Leave Management";
-      if (res) {
+      if (res.status) {
         this.getPendingLeaves();
         modalRef.componentInstance.msgText = "Approved Successfully";
       } else {
-        modalRef.componentInstance.msgText =
-          "Some Error has occured. Please try again later";
+        if (res.hasOwnProperty("errObject")) {
+          modalRef.componentInstance.msgText = res.errObject.MESSAGE;
+        } else {
+          modalRef.componentInstance.msgText =
+            "Some Error has occured. Please try again later ";
+        }
       }
     });
   }
 
   unapproveTheLeave(leave_app) {
-    this.manageLeaveService.unapproveTheLeave(leave_app).subscribe(res => {
-      const modalRef = this.modalService.open(MsgModalComponent);
-      modalRef.componentInstance.title = "Leave Management";
-      if (res) {
-        this.getApprovedLeaves();
-        modalRef.componentInstance.msgText = "Unapproved Successfully";
-      } else {
-        modalRef.componentInstance.msgText =
-          "Some Error has occured. Please try again later";
-      }
-    });
+    this.manageLeaveService
+      .unapproveTheLeave(leave_app)
+      .subscribe((res: any) => {
+        const modalRef = this.modalService.open(MsgModalComponent);
+        modalRef.componentInstance.title = "Leave Management";
+        if (res.status) {
+          this.getApprovedLeaves();
+          modalRef.componentInstance.msgText = "Unapproved Successfully";
+        } else {
+          if (res.hasOwnProperty("errObject")) {
+            modalRef.componentInstance.msgText = res.errObject.MESSAGE;
+          } else {
+            modalRef.componentInstance.msgText =
+              "Some Error has occured. Please try again later ";
+          }
+        }
+      });
   }
 
   rejectTheLeave(leave_app) {
-    this.manageLeaveService.rejectTheLeave(leave_app).subscribe(res => {
+    this.manageLeaveService.rejectTheLeave(leave_app).subscribe((res: any) => {
       const modalRef = this.modalService.open(MsgModalComponent);
       modalRef.componentInstance.title = "Leave Management";
-      if (res) {
+      if (res.status) {
         this.getPendingLeaves();
         modalRef.componentInstance.msgText = "Rejected Successfully";
       } else {
-        modalRef.componentInstance.msgText =
-          "Some Error has occured. Please try again later";
+        if (res.hasOwnProperty("errObject")) {
+          modalRef.componentInstance.msgText = res.errObject.MESSAGE;
+        } else {
+          modalRef.componentInstance.msgText =
+            "Some Error has occured. Please try again later ";
+        }
       }
     });
   }

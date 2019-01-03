@@ -1,3 +1,4 @@
+import { AuthGuard } from './gaurds/auth.guard';
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
@@ -46,6 +47,7 @@ import { AdminComponent } from "./components/admin/admin.component";
 import { MsgModalComponent } from "./components/msg-modal/msg-modal.component";
 import { ManageProfileService } from "./services/manage-profile.service";
 import { ConfirmEqualValidatorDirective } from "./directives/confirm-equal-validator.directive";
+import { LoggedGuard } from './gaurds/logged.guard';
 @NgModule({
   declarations: [
     AppComponent,
@@ -93,7 +95,9 @@ import { ConfirmEqualValidatorDirective } from "./directives/confirm-equal-valid
     ManageLeaveService,
     ManageUserService,
     ManageProfileService,
-    LoginService
+    LoginService,
+    AuthGuard,
+    LoggedGuard
   ],
   bootstrap: [AppComponent],
   entryComponents: [ReportModalComponent, MsgModalComponent]

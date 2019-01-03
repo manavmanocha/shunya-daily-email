@@ -8,6 +8,7 @@ import {
   NgbModal
 } from "@ng-bootstrap/ng-bootstrap";
 import { ManageUserService } from "../../services/manage-user.service";
+import { MsgModalComponent } from "../msg-modal/msg-modal.component";
 
 @Component({
   selector: "app-leave-records",
@@ -35,14 +36,28 @@ export class LeaveRecordsComponent implements OnInit {
     this.allUsernames = [];
     this.manageUserService.getUsernames().subscribe(res => {
       res.forEach(item => {
-        this.allUsernames.push({ name: item, selected: false });
-      });
+        this.allUsernames.push(item);
+      }); 
+      if(this.allUsernames.length > 0) {
+        this.name = this.allUsernames[0];
+      } 
     });
   }
 
   getmyLeaves() {
-    this.leaveService.getLeaveRecord(this.name).subscribe(leaves => {
-      this.leaveDates = leaves;
+    this.leaveService.getLeaveRecord(this.name).subscribe((response:any) => {
+      if(response.status)
+      this.leaveDates = response.leaves;
+      else{
+        const modalRef = this.modalService.open(MsgModalComponent);
+        modalRef.componentInstance.title = "Leave Application";
+        if (response.hasOwnProperty("errObject")) {
+          modalRef.componentInstance.msgText = response.errObject.MESSAGE;
+        } else {
+          modalRef.componentInstance.msgText =
+            "Some Error has occured. Please try again later ";
+        }
+      }
     });
   }
 
