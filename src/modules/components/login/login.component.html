@@ -1,0 +1,89 @@
+<div class="pt-5 d-flex flex-column ">
+  <p class="font-weight-bold text-center">Login into DLS APPS</p>
+  <div class="row m-0">
+    <div class=" mx-auto col-lg-3 col-md-6 card card-container p-0">
+      <i class="p-2 text-center text-primary fas fa-7x fa-user-circle"></i>
+      <form
+        class="m-2 form-signin "
+        #userForm="ngForm"
+        (ngSubmit)="login(user)"
+      >
+        <!--
+        <input
+          type="text"
+          id="username"
+          name="username"
+          placeholder="Username"
+          [(ngModel)]="user.username"
+          class="form-control"
+          required
+          #username="ngModel"
+        />
+        <span class="help-block" *ngIf="username.touched && username.errors?.required">
+          Username is required
+        </span>
+      -->
+        <input
+          type="text"
+          name="email"
+          placeholder="Email"
+          id="email"
+          [(ngModel)]="user.email"
+          class="form-control my-2 p-2"
+          required
+          [email]="user.email !== ''"
+          pattern="^[a-zA-Z0-9_.+-]+@(?:(?:[a-zA-Z0-9-]+\.)?[a-zA-Z]+\.)?(gmail|comprotechnologies)\.com$"
+          #email="ngModel"
+        />
+        <span
+          class="m-2 help-block"
+          *ngIf="email.touched && email.errors?.required"
+        >
+          Email is required
+        </span>
+        <span
+          class="m-2 help-block"
+          *ngIf="email.errors?.email && email.touched"
+        >
+          Email is invalid
+        </span>
+        <span
+          class="m-2 help-block"
+          *ngIf="!email.errors?.email && email.errors?.pattern && email.touched"
+        >
+          Domain is invalid
+        </span>
+
+        <input
+          type="password"
+          id="inputPassword"
+          class="my-1 form-control"
+          placeholder="Password"
+          required
+          name="password"
+          [(ngModel)]="user.password"
+          #password="ngModel"
+        />
+        <span
+          class="help-block"
+          *ngIf="password.touched && password.errors?.required"
+        >
+          Password is required
+        </span>
+        <button
+          class="btn btn-lg btn-primary btn-block"
+          [disabled]="userForm.invalid"
+          type="submit"
+        >
+          Sign in  <i *ngIf="loader" class="fas fa-spinner fa-spin"></i>
+        </button>
+      </form>
+      <span class="help-block ml-2" *ngIf="fail">
+        Username or Password is incorrect
+      </span>
+      <a [routerLink]="['/forgot-password']" class="m-2 forgot-password">
+        Forgot the password?
+      </a>
+    </div>
+  </div>
+</div>

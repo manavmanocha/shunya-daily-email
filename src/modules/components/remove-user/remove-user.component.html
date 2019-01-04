@@ -1,0 +1,31 @@
+<div class="row m-0">
+  <div class="my-4 mx-auto col-sm-3 card p-0">
+    <form #removeForm="ngForm" (ngSubmit)="remove(user)">
+      <div class="m-auto card-body">
+        <h5 class="card-title text-center">Remove users from system</h5>
+        <ul class="list-group  list-group-flush">
+          <li
+            *ngFor="let user of allUsernames; let i = index"
+            class="list-group-item"
+          >
+            <input
+              type="checkbox"
+              class="form-check-input"
+              (click)="checkboxSelected(i)"
+            />
+            {{ user.name }}
+          </li>
+        </ul>
+      </div>
+      <div class="card-footer text-center">
+        <button
+          class="btn btn-lg btn-primary btn-block my-2"
+          [disabled]=""
+          type="submit"
+        >
+          Remove
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

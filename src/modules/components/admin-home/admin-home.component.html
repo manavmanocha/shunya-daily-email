@@ -1,0 +1,113 @@
+<section class="text-center border-bottom" id="hometop">
+  <div class="p-3">
+    <div class=" p-4">
+      <h1 class="p-3 ">Welcome, {{ username }}</h1>
+      <p class="lead text-muted">
+        Your Account gives you quick access to Time in Entry and other
+        management tools that let you present your data, and manage your
+        relation with your manager and team.
+      </p>
+      <div class="text-center">
+        <i class="p-1 far fa-3x fa-clock"></i>
+        <i class="p-1 far fa-3x fa-calendar-alt"></i>
+        <i class="p-1 fas fa-3x fa-toolbox"></i>
+        <i class="p-1 far fa-3x fa-user"></i>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="container pb-5">
+  <div class="row mt-3">
+    <div class="col-sm-4">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="p-3 card-title">
+            <i class="p-1 fa-3x far fa-list-alt"></i> Entry
+          </h2>
+          <hr />
+          <div class="d-flex align-items-start flex-column">
+            <p class="card-text">Manage your time in entry.</p>
+            <span> </span>
+            <a [routerLink]="['../time-in']" class="btn btn-link"
+              >Make Time In Entry</a
+            >
+            <hr class="w-50" />
+            <p class="card-text">Manage your leaves.</p>
+            <span> </span>
+            <a [routerLink]="['../apply-leave']" class="btn btn-link"
+              >Apply for leave</a
+            >
+            <span> </span>
+            <a [routerLink]="['../status-leave']" class="btn btn-link"
+              >Check approved</a
+            >
+            <span> </span>
+            <a [routerLink]="['../record-leave']" class="btn btn-link"
+              >Previous Leave Record</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="p-3 card-title">
+            <i class="p-1 fa-3x fas fa-users"></i> Manage
+          </h2>
+          <hr />
+          <div class="d-flex align-items-start flex-column">
+            <p class="card-text">View Timein Report.</p>
+            <span>
+              <a [routerLink]="['../report']" class="btn btn-link"
+                >Time in Report</a
+              >
+            </span>
+            <hr class="w-50" />
+            <p class="card-text">Manage Users.</p>
+            <span>
+              <a [routerLink]="['../create-user']" class="btn btn-link"
+                >Create user</a
+              >
+            </span>
+            <span>
+              <a [routerLink]="['../remove-user']" class="btn btn-link"
+                >Remove user</a
+              >
+            </span>
+            <hr class="w-50" />
+            <p class="card-text">Manage Leave Applications.</p>
+            <span>
+              <a [routerLink]="['../manage-leaves']" class="btn btn-link"
+                >Leave Applications</a
+              >
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="p-3 card-title">
+            <i class="p-1 fa-3x far fa-user"></i> Profile
+          </h2>
+          <hr />
+          <div class="d-flex align-items-start flex-column">
+            <p class="card-text">Manage your profile.</p>
+            <span>
+              <a [routerLink]="['../profile/passsword']" class="btn btn-link"
+                >Change Password</a
+              >
+            </span>
+            <span>
+              <a [routerLink]="['../profile/username']" class="btn btn-link"
+                >Change Username</a
+              >
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

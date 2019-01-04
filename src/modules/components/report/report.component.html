@@ -1,0 +1,84 @@
+<div class="row m-0">
+  <div class="my-4 mx-auto col-sm-6 card p-0">
+    <div class="m-auto w-100 card-body">
+      <h5 class="card-title text-center">Display report for a user</h5>
+      <form class="p-3" #viewForm="ngForm" (ngSubmit)="viewReport()">
+        <select
+          class="form-control"
+          name="viewname"
+          [(ngModel)]="view.user"
+          required
+          #viewname="ngModel"
+        >
+          <option disabled selected>Choose..</option>
+          <option *ngFor="let user of allUsernames">{{ user.name }}</option>
+        </select>
+
+        <div class="form-group my-2">
+          <div class="row form-control m-0 d-flex flex-column">
+            <label for="viewtype" class="p-0">Report type :</label>
+            <label class="radio-inline p-md-0">
+              <input
+                type="radio"
+                class="mr-1"
+                value="Monthly"
+                name="viewtype"
+                [(ngModel)]="view.type"
+                required
+                #viewtype="ngModel"
+              />Monthly</label
+            >
+            <label class="radio-inline px-md-2">
+              <input
+                class="mx-1"
+                type="radio"
+                value="Yearly"
+                name="viewtype"
+                [(ngModel)]="view.type"
+                required
+                #viewtype="ngModel"
+              />Yearly</label
+            >
+          </div>
+          <span
+            class="help-block"
+            *ngIf="viewtype.errors?.required && viewtype.touched"
+          >
+            Report type is required
+          </span>
+        </div>
+
+        <select
+          *ngIf="view.type == 'Monthly'"
+          class="form-control"
+          name="subtype"
+          required
+          [(ngModel)]="view.month"
+          #subtype="ngModel"
+        >
+          <option *ngFor="let month of months; let i = index"
+            >{{ month }}
+          </option>
+        </select>
+
+        <select
+          *ngIf="view.type == 'Yearly'"
+          class="form-control"
+          name="subtype"
+          required
+          [(ngModel)]="view.year"
+          #subtype="ngModel"
+        >
+          <option *ngFor="let year of years; let i = index">{{ year }} </option>
+        </select>
+        <button
+          class="btn btn-lg btn-primary btn-block my-2"
+          [disabled]="viewForm.invalid"
+          type="submit"
+        >
+          View
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

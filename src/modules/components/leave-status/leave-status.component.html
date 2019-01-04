@@ -1,0 +1,75 @@
+<div class="row m-0">
+  <div class="my-4 mx-auto col-sm-8 card p-0">
+    <div class="m-auto card-body">
+      <h5 class="card-title text-center">Applied Leaves</h5>
+      <form
+        *ngFor="let leave_app of unavailableDates"
+        class="py-1 mx-2 form-inline"
+      >
+        <div class="col-md-2">
+          <label for="leavestart" *ngIf="leave_app.type == 'P'">Pending:</label>
+          <label for="leavestart" *ngIf="leave_app.type == 'A'"
+            >Approved:</label
+          >
+        </div>
+
+        <div class="form-group col-md-3">
+          <div class="input-group">
+            <input
+              class="form-control"
+              name="start"
+              placeholder="yyyy-mm-dd"
+              [(ngModel)]="leave_app.Lstart"
+              disabled
+              ngbDatepicker
+              #leavestart="ngbDatepicker"
+            />
+            <div class="input-group-append">
+              <button
+                class="btn btn-outline-secondary calendar"
+                (click)="leavestart.toggle()"
+                type="button"
+              >
+                <i class="far fa-calendar-alt"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <label for="leaveend" class="col-md-1">to</label>
+        <div class="form-group col-md-3">
+          <div class="input-group">
+            <input
+              class="form-control"
+              placeholder="yyyy-mm-dd"
+              name="end"
+              disabled
+              [(ngModel)]="leave_app.Lend"
+              ngbDatepicker
+              #leaveend="ngbDatepicker"
+            />
+            <div class="input-group-append">
+              <button
+                class="btn btn-outline-secondary calendar"
+                (click)="leaveend.toggle()"
+                type="button"
+              >
+                <i class="far fa-calendar-alt"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <button
+          type="button"
+          class="btn btn-primary ml-md-4 col-md-2"
+          (click)="cancelMyLeave(leave_app)"
+        >
+          Cancel
+        </button>
+      </form>
+      <div class="p-3" *ngIf="unavailableDates.length == 0">
+        <hr />
+        No entries.
+      </div>
+    </div>
+  </div>
+</div>

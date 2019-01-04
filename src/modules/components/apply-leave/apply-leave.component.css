@@ -1,0 +1,24 @@
+#calender-container{
+  overflow-x:auto;
+}
+.user-day {
+    text-align: center;
+    padding: 0.185rem 0.25rem;
+    display: inline-block;
+    height: 2rem;
+    width: 2rem;
+  }
+  .user-day.focused {
+    background-color: #e6e6e6;
+  }
+  .user-day.range, .user-day:hover {
+    background-color: rgb(2, 117, 216);
+    color: white;
+  }
+  .user-day.faded {
+    background-color: rgba(2, 117, 216, 0.5);
+  }
+  .user-day.disabled{
+    background-color: #c5c5c5;
+  }
+

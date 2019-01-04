@@ -1,0 +1,63 @@
+{
+  "_from": "ngx-line-chart",
+  "_id": "ngx-line-chart@1.0.0",
+  "_inBundle": false,
+  "_integrity": "sha512-6PcMtpkoUXw44AFLCjz1QO7oFFISWOFSI8ZHZ23X4oxn2XycmxJWkcdsgM5kyl9pSv7OrIrwsADz7c9fO4D+lA==",
+  "_location": "/ngx-line-chart",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "ngx-line-chart",
+    "name": "ngx-line-chart",
+    "escapedName": "ngx-line-chart",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/ngx-line-chart/-/ngx-line-chart-1.0.0.tgz",
+  "_shasum": "7098f91cc7abf2606f6f18c6f2b0debeae267caf",
+  "_spec": "ngx-line-chart",
+  "_where": "E:\\comprodls\\shunya-daily-email",
+  "author": {
+    "name": "Roope Hakulinen",
+    "email": "roope.hakulinen@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/RoopeHakulinen/ngx-line-chart/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "deepmerge": "^1.5.0"
+  },
+  "deprecated": false,
+  "description": "Good-looking, easy-to-use, customizable Angular line chart library for 1 or 2 data sets with separate or common y-axes.",
+  "homepage": "https://github.com/RoopeHakulinen/ngx-line-chart#readme",
+  "jsnext:main": "ngx-line-chart.js",
+  "keywords": [
+    "angular",
+    "line chart",
+    "chart",
+    "graph"
+  ],
+  "license": "MIT",
+  "main": "ngx-line-chart.umd.js",
+  "module": "ngx-line-chart.js",
+  "name": "ngx-line-chart",
+  "peerDependencies": {
+    "@angular/core": ">2.0.0",
+    "@angular/common": ">2.0.0",
+    "rxjs": ">5.0.0",
+    "zone.js": ">0.8.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RoopeHakulinen/ngx-line-chart.git"
+  },
+  "typings": "ngx-line-chart.d.ts",
+  "version": "1.0.0"
+}

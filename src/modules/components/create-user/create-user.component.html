@@ -1,0 +1,64 @@
+<div class="row m-0">
+  <div class="my-4 mx-auto col-sm-4 card p-0">
+    <form #createForm="ngForm" (ngSubmit)="create(user, createForm)">
+      <div class="m-auto card-body">
+        <h5 class="card-title text-center">Create new user for system</h5>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          placeholder="User name"
+          [(ngModel)]="user.username"
+          class="form-control my-2 p-2"
+          required
+          #username="ngModel"
+        />
+        <span
+          class="m-2 help-block"
+          *ngIf="username.touched && username.errors?.required"
+        >
+          User name is required
+        </span>
+        <input
+          type="text"
+          name="email"
+          placeholder="Email"
+          id="email"
+          [(ngModel)]="user.email"
+          class="form-control my-2 p-2"
+          required
+          [email]="user.email !== ''"
+          pattern="^[a-zA-Z0-9_.+-]+@(?:(?:[a-zA-Z0-9-]+\.)?[a-zA-Z]+\.)?(gmail|comprotechnologies)\.com$"
+          #email="ngModel"
+        />
+        <span
+          class="m-2 help-block"
+          *ngIf="email.touched && email.errors?.required"
+        >
+          Email is required
+        </span>
+        <span
+          class="m-2 help-block"
+          *ngIf="email.errors?.email && email.touched"
+        >
+          Email is invalid
+        </span>
+        <span
+          class="m-2 help-block"
+          *ngIf="!email.errors?.email && email.errors?.pattern && email.touched"
+        >
+          Domain is invalid
+        </span>
+      </div>
+      <div class="card-footer text-center">
+        <button
+          class="btn btn-lg btn-primary btn-block my-2"
+          [disabled]="createForm.invalid"
+          type="submit"
+        >
+          Create
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

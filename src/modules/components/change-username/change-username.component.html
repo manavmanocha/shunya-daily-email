@@ -1,0 +1,61 @@
+<div class="text-center p-2 text-danger">
+          You are not adviced to change the username as this is set by your
+          Manager and they identify you with this username. This change will be
+          visible to your manager.
+</div>
+<div class="row m-0">
+  <div class="my-4 mx-auto col-sm-4 card p-0">
+    <form
+      #changeUsernameForm="ngForm"
+      (ngSubmit)="changeUsername(user, changeUsernameForm)"
+    >
+      <div class="m-auto card-body">
+        <h5 class="card-title text-center">Change Username</h5>
+        
+        <input
+          type="text"
+          id="username"
+          name="username"
+          [(ngModel)]="user.username"
+          class="form-control my-2 p-2"
+          disabled
+          #username="ngModel"
+        />
+        <input
+          id="password"
+          required
+          type="password"
+          placeholder="Password"
+          class="form-control my-2 p-2"
+          name="password"
+          [(ngModel)]="user.password"
+          #password="ngModel"
+        />
+        <span
+          class="help-block"
+          *ngIf="password.touched && password.errors?.required"
+        >
+          Password is required
+        </span>
+        <input
+          type="text"
+          id="newusername"
+          name="newusername"
+          placeholder="New Username"
+          [(ngModel)]="user.newusername"
+          class="form-control my-2 p-2"
+          #username="ngModel"
+        />
+      </div>
+      <div class="card-footer text-center">
+        <button
+          class="btn btn-lg btn-primary btn-block my-2"
+          [disabled]="changeUsernameForm.invalid"
+          type="submit"
+        >
+          Change
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
