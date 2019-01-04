@@ -2,8 +2,8 @@ module.exports = {
   PASSWORD_LENGTH: 10,
   DATABASE: {},
   MAIL: {
-    MAIL_INTRO: "<p>Hey,<br><br> ",
-    MAIL_END: "<br><br> <b>Thanks and Regards,<br> DLS APPS </b> </p>",
+    MAIL_INTRO: "<p>Hello,<br><br> ",
+    MAIL_END: "<br><br> <b>Thanks,<br> DLS APPS </b> </p>",
     MAIL_TYPES: {
       NEWACCOUNT: {
         TEXT:
@@ -21,8 +21,8 @@ module.exports = {
         SUBJECT: "Account Removal"
       },
       TIMEIN: {
-        TEXT: "The time in of the team is mentioned below",
-        SUBJECT: "Time in Entries"
+        TEXT: "",
+        SUBJECT: "Arrival Time"
       },
       PASSWORD_CHANGE: {
         TEXT:
