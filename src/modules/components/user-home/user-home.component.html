@@ -1,0 +1,80 @@
+<section class="text-center border-bottom" id="/hometop">
+  <div class="p-3">
+    <div class=" p-4">
+      <h1 class="p-3 ">Welcome, {{ username }}</h1>
+      <p class="lead text-muted">
+        Your Account gives you quick access to Time in Entry and other
+        management tools that let you present your data, and manage your
+        relation with your manager and team.
+      </p>
+      <div class="text-center">
+        <i class="p-1 far fa-3x fa-clock"></i>
+        <i class="p-1 far fa-3x fa-calendar-alt"></i>
+        <i class="p-1 fas fa-3x fa-toolbox"></i>
+        <i class="p-1 far fa-3x fa-user"></i>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="container pb-5">
+  <div class="row mt-3">
+    <div class="col-sm-4">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="p-3 card-title">
+            <i class="p-1 fa-4x far fa-clock"></i> Time in
+          </h2>
+          <hr />
+          <div class="d-flex align-items-start flex-column">
+            <p class="card-text">Manage your time in entry.</p>
+            <a [routerLink]="['../time-in']" class="btn btn-link"
+              >Make Time In Entry</a
+            >
+            <a [routerLink]="['../report']" class="btn btn-link">View Report</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="p-3 card-title">
+            <i class="p-1 fa-4x far fa-calendar-alt"></i> Leave
+          </h2>
+          <hr />
+          <div class="d-flex align-items-start flex-column">
+            <p class="card-text">Manage your leaves.</p>
+            <a [routerLink]="['../apply-leave']" class="btn btn-link"
+              >Apply for leave</a
+            >
+            <a [routerLink]="['../status-leave']" class="btn btn-link"
+              >Check approved</a
+            >
+            <a [routerLink]="['../record-leave']" class="btn btn-link"
+              >Previous Leave Record</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="p-3 card-title">
+            <i class="p-1 fa-4x far fa-user"></i> Profile
+          </h2>
+          <hr />
+          <div class="d-flex align-items-start flex-column">
+            <p class="card-text">Manage your profile.</p>
+            <a [routerLink]="['../profile/passsword']" class="btn btn-link"
+              >Change Password</a
+            >
+            <a [routerLink]="['../profile/username']" class="btn btn-link"
+              >Change Username</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

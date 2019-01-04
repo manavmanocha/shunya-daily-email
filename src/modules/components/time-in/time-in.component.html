@@ -1,0 +1,25 @@
+<div class="row m-0">
+  <div class="my-5 mx-auto col-sm-4 card p-0">
+    <div class="m-auto card-body">
+      <h5 class="card-title text-center">Time Entry</h5>
+      <label *ngIf="todayentry" class="text-primary"
+        >Today's Time Entry : {{ todayentry }}</label
+      >
+      <ngb-timepicker [(ngModel)]="time" [meridian]="meridian"></ngb-timepicker>
+    </div>
+    <div class="card-footer text-center">
+      <button
+        (click)="savetime()"
+        [disabled]="
+          this.time.hour > timenow.getHours() ||
+          loader ||
+          (this.time.hour == timenow.getHours() &&
+            this.time.minute > timenow.getMinutes())
+        "
+        class="btn btn-primary pr-2"
+      >
+        Save Time <i *ngIf="loader" class="fas fa-spinner fa-spin"></i>
+      </button>
+    </div>
+  </div>
+</div>

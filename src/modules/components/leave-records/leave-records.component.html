@@ -1,0 +1,49 @@
+<div class="row m-0">
+  <div class="my-4 mx-auto col-sm-6 card p-0">
+    <div class="m-auto card-body w-100">
+      <h5 class="card-title text-center">Previous Leave Record</h5>
+      <form
+        class="py-4 form-inline"
+        #viewForm="ngForm"
+        (ngSubmit)="getmyLeaves()"
+      >
+        <select
+          class="form-control w-100 py-2"
+          name="username"
+          [(ngModel)]="name"
+          required
+          #username="ngModel"
+        >
+          <option disabled selected>Choose..</option>
+          <option *ngFor="let user of allUsernames">{{user}}</option>
+        </select>
+        <button
+          class="btn btn-lg btn-primary btn-block my-2"
+          [disabled]="viewForm.invalid"
+          type="submit"
+        >
+          View
+        </button>
+        <div id="calender-container" class="mx-auto">
+          <ngb-datepicker
+            class="mx-auto"
+            #dp
+            [displayMonths]="2"
+            [dayTemplate]="dateTemp"
+            outsideDays="hidden"
+          >
+          </ngb-datepicker>
+          <ng-template #dateTemp let-date>
+            <span
+              class="user-day"
+              [class.marked]="isMarked(date)"
+              [class.disabled]="isDisabled(date)"
+            >
+              {{ date.day }}
+            </span>
+          </ng-template>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
