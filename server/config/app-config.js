@@ -21,11 +21,11 @@ module.exports = {
   },
   mail: {
     clientId:
-      "260876868865-g1h7ai3tb127cjdtcl5bhruemvaehlh1.apps.googleusercontent.com",
-    clientSecret: "jsU9YxOSgDQh65Ms4GwspGaA",
-    refreshToken: "1/CLyIo-KQGqdEiXPHtogO-aeiBkgWSNQ1QowDyEiUIIQ",
-    user: "app.timesheet.dls@gmail.com",
-    timeinMailReciever: "app.timesheet.dls@gmail.com",
+      process.env.SENDER_CLIENTID || "260876868865-g1h7ai3tb127cjdtcl5bhruemvaehlh1.apps.googleusercontent.com",
+    clientSecret: process.env.SENDER_SECRET || "jsU9YxOSgDQh65Ms4GwspGaA",
+    refreshToken: process.env.SENDER_REFRESH_TOKEN || "1/CLyIo-KQGqdEiXPHtogO-aeiBkgWSNQ1QowDyEiUIIQ",
+    user: process.env.SENDER_EMAIL ||"app.timesheet.dls@gmail.com",
+    timeinMailReciever: process.env.RECIEVER_MAIL ||"app.timesheet.dls@gmail.com",
     reminderScheduleTime: "0 0,30 11,12,13 * * Monday-Friday",
     timeinScheduleTime: "0 0 14 * * Monday-Friday"
   },

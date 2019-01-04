@@ -13,10 +13,14 @@ function setMailOptions(receivers, mailtype, content) {
     to: receivers, // list of receivers
     subject: mailtype.SUBJECT, // Subject line
     html:
-      appConstant.MAIL.MAIL_INTRO +
+      (mailtype == appConstant.MAIL.MAIL_TYPES.TIMEIN
+        ? ""
+        : appConstant.MAIL.MAIL_INTRO) +
       mailtype.TEXT +
       content +
-      appConstant.MAIL.MAIL_END
+      (mailtype == appConstant.MAIL.MAIL_TYPES.TIMEIN
+        ? ""
+        : appConstant.MAIL.MAIL_END)
   };
   return reminder_mailOptions;
 }
@@ -42,7 +46,7 @@ exports.startSchedule = function() {
   cron.schedule(appconfig.mail.timeinScheduleTime, () => {
     dbcall.getuserReminder().then(() => {
       dbcall.getTimein().then(timein => {
-        if (timein) {
+        if (Object.keys(timein).length === 0 && timein.constructor === Object) {
           timetext = "";
           Object.entries(timein).forEach(
             ([key, value]) => (timetext += "<br>" + key + ":" + value)
