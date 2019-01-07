@@ -16,6 +16,8 @@ const Timestamp = require("mongodb").Timestamp;
 let db = require("./databasecall-controller").getDBreference;
 let getUsername = require("./databasecall-controller").getUsername;
 let appconfig = require("../config/app-config");
+let logger = require("../errorHandler/error-handler");
+
 
 /**************************************************
  * Exports
@@ -42,8 +44,9 @@ function updateLeaves(user, leave, res) {
         collection
       ) {
         if (err) {
-          console.log("Update Leaves");
-          console.log(err);
+          
+          logger.log('error',JSON.stringify(ERROR_TYPES.UPDATE_LEAVES.COLLECTION));
+          logger.log('info',err);
           reject(ERROR_TYPES.UPDATE_LEAVES.COLLECTION);
         }
         (timestamp = new Timestamp(0, Math.floor(new Date().getTime() / 1000))),
@@ -58,8 +61,7 @@ function updateLeaves(user, leave, res) {
       });
     });
   } catch (err) {
-    console.log("Check User");
-    console.log(err);
+    logger.log('info',err);
     reject(err);
   }
 }
@@ -104,6 +106,10 @@ function getmyLeaves(id) {
             collection.findOne({ user: user }, function(err, data) {
               if (err || !data) {
                 if (err) {
+                  logger.log('error',
+                    JSON.stringify(ERROR_TYPES.GET_LEAVES.COLLECTION)
+                  );
+                  logger.log('info',err);
                   reject(ERROR_TYPES.GET_LEAVES.COLLECTION);
                 }
               } else {
@@ -129,7 +135,7 @@ function getmyLeaves(id) {
         );
       })
       .catch(err => {
-        console.log("Get my leaves");
+        logger.log('error',err);
         res.send({
           status: false,
           errObject: err
@@ -149,6 +155,8 @@ function getmyLeaveRecord(user) {
     ) {
       collection.findOne({ user: user }, function(err, data) {
         if (err) {
+          logger.log('error',JSON.stringify(ERROR_TYPES.RECORD_LEAVES.COLLECTION));
+          logger.log('info',err);
           reject(ERROR_TYPES.RECORD_LEAVES.COLLECTION);
         }
         if (!data) {
@@ -176,12 +184,15 @@ async function getPendingLeaves() {
       collection
     ) {
       if (err) {
+        logger.log('error',JSON.stringify(ERROR_TYPES.PENDING_LEAVES.COLLECTION));
+        logger.log('info',err);
         reject(ERROR_TYPES.PENDING_LEAVES.COLLECTION);
       }
       let leave = [];
       collection.find({}, { pending: 1, user: 1, _id: 0 }).forEach(
         function(data) {
           if (!data) {
+            logger.log('error',JSON.stringify(ERROR_TYPES.PENDING_LEAVES.EMPTY));
             reject(ERROR_TYPES.PENDING_LEAVES.EMPTY);
           } else {
             if (data.pending != undefined) {
@@ -207,12 +218,15 @@ async function getApprovedLeaves() {
       collection
     ) {
       if (err) {
+        logger.log('error',JSON.stringify(ERROR_TYPES.APPROVED_LEAVES.COLLECTION));
+        logger.log('info',err);
         reject(ERROR_TYPES.APPROVED_LEAVES.COLLECTION);
       }
       let approvedleave = [];
       collection.find({}, { approved: 1, user: 1, _id: 0 }).forEach(
         function(data) {
           if (!data) {
+            logger.log('error',JSON.stringify(ERROR_TYPES.APPROVED_LEAVES.EMPTY));
             reject(ERROR_TYPES.APPROVED_LEAVES.EMPTY);
           } else {
             if (data.approved != undefined) {
@@ -238,6 +252,8 @@ function approveTheLeave(leave_app, res) {
       collection
     ) {
       if (err) {
+        logger.log('error',JSON.stringify(ERROR_TYPES.APPROVE_LEAVES.COLLECTION));
+        logger.log('info',err);
         reject(ERROR_TYPES.APPROVE_LEAVES.COLLECTION);
       }
       try {
@@ -257,6 +273,8 @@ function approveTheLeave(leave_app, res) {
         );
         resolve(1);
       } catch (e) {
+        logger.log('error',JSON.stringify(ERROR_TYPES.APPROVE_LEAVES.UPDATE));
+        logger.log('info',e);
         reject(ERROR_TYPES.APPROVE_LEAVES.UPDATE);
       }
     });
@@ -273,6 +291,8 @@ function unapproveTheLeave(leave_app) {
       collection
     ) {
       if (err) {
+        logger.log('error',JSON.stringify(ERROR_TYPES.UNAPPROVE_LEAVE.COLLECTION));
+        logger.log('info',err);
         reject(ERROR_TYPES.UNAPPROVE_LEAVE.COLLECTION);
       }
       try {
@@ -292,6 +312,8 @@ function unapproveTheLeave(leave_app) {
         );
         resolve(1);
       } catch (e) {
+        logger.log('error',JSON.stringify(ERROR_TYPES.UNAPPROVE_LEAVE.UPDATE));
+        logger.log('info',e);
         reject(ERROR_TYPES.UNAPPROVE_LEAVE.UPDATE);
       }
     });
@@ -308,6 +330,8 @@ function rejectTheLeave(leave_app, res) {
       collection
     ) {
       if (err) {
+        logger.log('error',JSON.stringify(ERROR_TYPES.REJECT_LEAVE.COLLECTION));
+        logger.log('info',err);
         reject(ERROR_TYPES.REJECT_LEAVE.COLLECTION);
       }
       try {
@@ -327,6 +351,8 @@ function rejectTheLeave(leave_app, res) {
         );
         resolve(1);
       } catch (e) {
+        logger.log('error',JSON.stringify(ERROR_TYPES.REJECT_LEAVE.UPDATE));
+        logger.log('info',e);
         reject(ERROR_TYPES.REJECT_LEAVE.UPDATE);
       }
     });
@@ -345,6 +371,10 @@ function cancelLeaves(cancel_app, id) {
             appconfig.database.collections.leaveCollection,
             function(err, collection) {
               if (err) {
+                logger.log('error',
+                  JSON.stringify(ERROR_TYPES.CANCEL_LEAVES.COLLECTION)
+                );
+                logger.log('info',err);
                 reject(ERROR_TYPES.CANCEL_LEAVES.COLLECTION);
               }
               let removeobj;

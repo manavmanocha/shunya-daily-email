@@ -14,7 +14,7 @@ export class HeaderComponent implements OnInit {
   ngOnInit() {}
 
   checklogged() {
-      if (localStorage.getItem("uname")) {return true;}
+      if (this._router.url != '/login') {return true;}
       else{return false;}
   }
 

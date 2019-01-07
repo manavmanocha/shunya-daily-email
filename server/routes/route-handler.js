@@ -17,6 +17,8 @@ let adminController = require("../controllers/admin-controller");
 let viewController = require("../controllers/view-controller");
 let appconfig = require("../config/app-config");
 let ERROR_TYPES = require("../errorHandler/error-constants").ERROR_TYPES;
+let logger = require("../errorHandler/error-handler");
+
 /**************************************************
  * Exports
  **************************************************/
@@ -56,6 +58,7 @@ router.post("/timein", function(req, res, next) {
   if (id) {
     timeinController.saveTime(id, time, res);
   } else {
+    logger.log('error',JSON.stringify(ERROR_TYPES.UPDATE_TIME.SESSION));
     res.send({
       status: false,
       errObject: ERROR_TYPES.UPDATE_TIME.SESSION
@@ -72,6 +75,7 @@ router.get("/getTime", function(req, res, next) {
   if (id) {
     timeinController.getTime(id, res);
   } else {
+    logger.log('error',JSON.stringify(ERROR_TYPES.FIND_TIME.SESSION));
     res.send({
       status: false,
       errObject: ERROR_TYPES.FIND_TIME.SESSION
@@ -93,8 +97,7 @@ router.post("/createuser", function(req, res, next) {
         status: true
       });
     })
-    .catch(response => {
-      console.log(response);
+    .catch(response => {;
       res.send({
         status: false,
         errObject: response
@@ -150,6 +153,7 @@ router.post("/sendleaves", function(req, res, next) {
   if (id) {
     leavesController.sendLeaves(id, leaves, res);
   } else {
+    logger.log('error',JSON.stringify(ERROR_TYPES.UPDATE_TIME.SESSION));
     res.send({
       status: false,
       errObject: ERROR_TYPES.UPDATE_TIME.SESSION
@@ -166,8 +170,7 @@ router.get("/pendingLeaves", function(req, res, next) {
       res.send(users);
     })
     .catch(err => {
-      console.log("Pending Leaves");
-      console.log(err);
+      logger.log('info',err);
       res.send(null);
     });
 });
@@ -182,8 +185,7 @@ router.get("/approvedLeaves", function(req, res, next) {
       res.send(users);
     })
     .catch(err => {
-      console.log("Approved Leaves");
-      console.log(err);
+      logger.log('info',err);
       res.send(null);
     });
 });
@@ -210,6 +212,7 @@ router.get("/getLeaves", function(req, res, next) {
         });
       });
   } else {
+    logger.log('error',JSON.stringify(ERROR_TYPES.GET_LEAVES.SESSION));
     res.send({
       status: false,
       errObject: ERROR_TYPES.GET_LEAVES.SESSION
@@ -263,6 +266,7 @@ router.post("/cancelLeaves", function(req, res, next) {
         });
       });
   } else {
+    logger.log('error',JSON.stringify(ERROR_TYPES.CANCEL_LEAVES.SESSION));
     res.send({
       status: false,
       errObject: ERROR_TYPES.CANCEL_LEAVES.SESSION

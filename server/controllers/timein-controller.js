@@ -12,6 +12,8 @@ let db = require("./databasecall-controller").getDBreference;
 let getUsername = require("./databasecall-controller").getUsername;
 let appconfig = require("../config/app-config");
 let ERROR_TYPES = require("../errorHandler/error-constants").ERROR_TYPES;
+let logger = require("../errorHandler/error-handler");
+
 /**************************************************
  * Exports
  **************************************************/
@@ -29,8 +31,8 @@ function updateTime(user, time) {
         collection
       ) {
         if (err) {
-          console.log("Update time");
-          console.log(err);
+          logger.log('error',JSON.stringify(ERROR_TYPES.UPDATE_TIME.COLLECTION));
+          logger.log('info',err);
           reject(ERROR_TYPES.UPDATE_TIME.COLLECTION);
         }
         date = new Date();
@@ -51,8 +53,8 @@ function updateTime(user, time) {
       });
     });
   } catch (err) {
-    console.log("Update Time Error Catch");
-    console.log(err);
+    logger.log('error',JSON.stringify(ERROR_TYPES.UPDATE_TIME.UPDATE));
+    logger.log('info',err);
     reject(ERROR_TYPES.UPDATE_TIME.UPDATE);
   }
 }
@@ -68,7 +70,8 @@ function findTime(user) {
         collection
       ) {
         if (err) {
-          console.log(err);
+          logger.log('error',JSON.stringify(ERROR_TYPES.FIND_TIME.COLLECTION));
+          logger.log('info',err);
           reject(ERROR_TYPES.FIND_TIME.COLLECTION);
         }
         date = new Date();
@@ -81,21 +84,19 @@ function findTime(user) {
           date.getFullYear();
         collection.findOne({ date: stringdate }, function(err, data) {
           if (err) {
-            console.log(err);
-          reject(ERROR_TYPES.FIND_TIME.COLLECTION);
-          } 
-          else if(!data){
+            logger.log('error',JSON.stringify(ERROR_TYPES.FIND_TIME.COLLECTION));
+            logger.log('info',err);
+            reject(ERROR_TYPES.FIND_TIME.COLLECTION);
+          } else if (!data) {
             resolve(false);
-          }
-          else {
+          } else {
             resolve(data.timein[user]);
           }
         });
       });
     });
   } catch (err) {
-    console.log("Find Time Error Catch");
-    console.log(err);
+    logger.log('info',err);
     reject(err);
   }
 }
@@ -111,7 +112,6 @@ function saveTime(id, time, res) {
       });
     })
     .catch(err => {
-      console.log("Save Time Error");
       res.send({
         status: false,
         errObject: err
@@ -127,14 +127,13 @@ function getTime(id, res) {
     .then(username => {
       findTime(username).then(value => {
         if (value) {
-          res.send({status: true, time: value });
+          res.send({ status: true, time: value });
         } else {
           res.send({ status: false });
         }
       });
     })
     .catch(err => {
-      console.log("Get Time Error");
       res.send({
         status: false,
         errObject: err

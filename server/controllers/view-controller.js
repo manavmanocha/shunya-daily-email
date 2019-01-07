@@ -12,6 +12,8 @@ let ObjectID = require("mongodb").ObjectID;
 let db = require("./databasecall-controller").getDBreference;
 let appconfig = require("../config/app-config");
 let appConstant = require("../utils/constants");
+let logger = require("../errorHandler/error-handler");
+
 /**************************************************
  * Exports
  **************************************************/
@@ -47,9 +49,13 @@ function viewYearly(view) {
         .forEach(
           function(data) {
             if (err) {
-              console.log(err);
+              logger.log('error',JSON.stringify(ERROR_TYPES.YEARLY_REPORT.ERROR));
+              logger.log('info',err);
               reject(ERROR_TYPES.YEARLY_REPORT.ERROR);
             } else if (!data) {
+              logger.log('error',
+                JSON.stringify(ERROR_TYPES.YEARLY_REPORT.DATA_NOT_PRESENT)
+              );
               reject(ERROR_TYPES.YEARLY_REPORT.DATA_NOT_PRESENT);
             } else {
               if (data.timein[view.user] != undefined)
@@ -105,9 +111,13 @@ function viewMonthly(view) {
         .forEach(
           function(data) {
             if (err) {
-              console.log(err);
+              logger.log('error',JSON.stringify(ERROR_TYPES.YEARLY_REPORT.ERROR));
+              logger.log('info',err);
               reject(ERROR_TYPES.YEARLY_REPORT.ERROR);
             } else if (!data) {
+              logger.log('error',
+                JSON.stringify(ERROR_TYPES.MONTHLY_REPORT.DATA_NOT_PRESENT)
+              );
               reject(ERROR_TYPES.MONTHLY_REPORT.DATA_NOT_PRESENT);
             } else {
               if (data.timein[view.user] != undefined)

@@ -12,6 +12,7 @@ const MongoClient = require("mongodb").MongoClient;
 
 let appconfig = require("../config/app-config");
 let ERROR_TYPES = require("../errorHandler/error-constants").ERROR_TYPES;
+let logger = require("../errorHandler/error-handler");
 
 /**************************************************
  * Exports
@@ -61,16 +62,17 @@ async function getUsername(id) {
         collection
       ) {
         if (err) {
-          console.log("Get Username");
-          console.log(err);
+          logger.log('info',JSON.stringify(ERROR_TYPES.GET_USERNAME.COLLECTION));
+          logger.debug(err);
           reject(ERROR_TYPES.GET_USERNAME.COLLECTION);
         }
         collection.findOne({ _id: ObjectID(id) }, function(err, data) {
           if (err) {
-            console.log("Get Username");
-            console.log(err);
+            logger.log('info',JSON.stringify(ERROR_TYPES.GET_USERNAME.COLLECTION));
+            logger.debug(err);
             reject(ERROR_TYPES.GET_USERNAME.COLLECTION);
           } else if (!data) {
+            logger.log('info',JSON.stringify(ERROR_TYPES.GET_USERNAME.SESSION));
             reject(ERROR_TYPES.GET_USERNAME.SESSION);
           } else {
             resolve(data.username);
@@ -79,8 +81,7 @@ async function getUsername(id) {
       });
     });
   } catch (err) {
-    console.log("Get Username");
-    console.log(err);
+    logger.log('info',err);
     reject(err);
   }
 }

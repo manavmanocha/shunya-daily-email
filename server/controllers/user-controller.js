@@ -4,7 +4,7 @@
 
 let Cookies = require("cookies");
 const assert = require("assert");
-
+let ObjectID = require("mongodb").ObjectID;
 /**************************************************
  * Include internal modules
  **************************************************/
@@ -15,7 +15,9 @@ let sendmail = require("./mailer-controller").sendmail;
 let appconfig = require("../config/app-config");
 let appConstant = require("../utils/constants");
 let ERROR_TYPES = require("../errorHandler/error-constants").ERROR_TYPES;
-let ObjectID = require("mongodb").ObjectID;
+
+let logger = require("../errorHandler/error-handler");
+
 /**************************************************
  * Exports
  **************************************************/
@@ -72,8 +74,7 @@ function loginUser(email, password, res, cookies) {
       });
     });
   } catch (err) {
-    console.log("Login Error");
-    console.log(e);
+    logger.log('info',err);
     res.send({ status: false, _id: null, uemail: null });
   }
 }
@@ -94,13 +95,17 @@ function createUser(user) {
         { $or: [{ email: user.email }, { username: user.username }] },
         function(err, data) {
           if (err) {
-            console.log(err);
+            logger.log('error',JSON.stringify(ERROR_TYPES.CREATE_USER.COLLECTION));
+            logger.log('info',err);
             reject(ERROR_TYPES.CREATE_USER.COLLECTION);
           } else {
             if (data == null) {
               collection.insertOne(user, function(err, dbresponse) {
                 if (err) {
-                  console.log(err);
+                  logger.log('error',
+                    JSON.stringify(ERROR_TYPES.CREATE_USER.INSERTION)
+                  );
+                  logger.log('info',err);
                   reject(ERROR_TYPES.CREATE_USER.INSERTION);
                 } else {
                   usertext = "";
@@ -116,6 +121,10 @@ function createUser(user) {
                 }
               });
             } else {
+              logger.log('error',
+                JSON.stringify(ERROR_TYPES.CREATE_USER.USERDATA_EXISTS)
+              );
+              logger.log('info',err);
               reject(ERROR_TYPES.CREATE_USER.USERDATA_EXISTS);
             }
           }
@@ -123,6 +132,8 @@ function createUser(user) {
       );
     });
   } catch (e) {
+    logger.log('error',JSON.stringify(ERROR_TYPES.CHANGE_USERNAME.SESSION));
+    logger.log('info',e);
     reject(ERROR_TYPES.CHANGE_USERNAME.SESSION);
   }
 }
@@ -175,14 +186,14 @@ async function checkUser(id) {
         collection
       ) {
         if (err) {
-          console.log("Check User");
-          console.log(err);
+          logger.log('error',JSON.stringify(ERROR_TYPES.CHECK_USER.COLLECTION));
+          logger.log('info',err);
           reject(ERROR_TYPES.CHECK_USER.COLLECTION);
         }
         collection.findOne({ _id: ObjectID(id) }, function(err, data) {
           if (err) {
-            console.log("Check User");
-            console.log(err);
+            logger.log('error',JSON.stringify(ERROR_TYPES.CHECK_USER.COLLECTION));
+            logger.log('info',err);
             reject(ERROR_TYPES.CHECK_USER.COLLECTION);
           } else if (!data) {
             reject(ERROR_TYPES.CHECK_USER.SESSION);
@@ -193,8 +204,7 @@ async function checkUser(id) {
       });
     });
   } catch (err) {
-    console.log("Check User");
-    console.log(err);
+    logger.log('info',err);
     reject(err);
   }
 }
@@ -225,7 +235,8 @@ function changePassword(user, id) {
       //Check and update user
       collection.findOne({ _id: id }, function(err, data) {
         if (err) {
-          console.log(err);
+          logger.log('error',JSON.stringify(ERROR_TYPES.CHANGE_PASSWORD.COLLECTION));
+          logger.log('info',err);
           reject(ERROR_TYPES.CHANGE_PASSWORD.COLLECTION);
         } else {
           if (data != null) {
@@ -237,17 +248,20 @@ function changePassword(user, id) {
               );
               resolve(1);
             } else {
+              logger.log('error',
+                JSON.stringify(ERROR_TYPES.CHANGE_PASSWORD.PASSWORD)
+              );
               reject(ERROR_TYPES.CHANGE_PASSWORD.PASSWORD);
             }
           } else {
+            logger.log('error',JSON.stringify(ERROR_TYPES.CHANGE_PASSWORD.SESSION));
             reject(ERROR_TYPES.CHANGE_PASSWORD.SESSION);
           }
         }
       });
     });
   } catch (err) {
-    console.log("Change Password Error Catch");
-    console.log(err);
+    logger.log('info',err);
     reject(err);
   }
 }
@@ -264,7 +278,8 @@ function changeUsername(user, id) {
       );
       collection.findOne({ _id: id }, function(err, data) {
         if (err) {
-          console.log(err);
+          logger.log('error',JSON.stringify(ERROR_TYPES.CHANGE_USERNAME.COLLECTION));
+          logger.log('info',err);
           reject(ERROR_TYPES.CHANGE_USERNAME.COLLECTION);
         } else {
           if (data != null) {
@@ -274,7 +289,10 @@ function changeUsername(user, id) {
                 data
               ) {
                 if (err) {
-                  console.log(err);
+                  logger.log('error',
+                    JSON.stringify(ERROR_TYPES.CHANGE_USERNAME.COLLECTION)
+                  );
+                  logger.log('info',err);
                   reject(ERROR_TYPES.CHANGE_USERNAME.COLLECTION);
                 } else {
                   if (data == null) {
@@ -285,23 +303,31 @@ function changeUsername(user, id) {
                     );
                     resolve(1);
                   } else {
+                    logger.log('error',
+                      JSON.stringify(
+                        ERROR_TYPES.CHANGE_USERNAME.USERNAME_EXISTS
+                      )
+                    );
                     reject(ERROR_TYPES.CHANGE_USERNAME.USERNAME_EXISTS);
                   }
                 }
               });
             } else {
+              logger.log('error',
+                JSON.stringify(ERROR_TYPES.CHANGE_USERNAME.PASSWORD_NOT_MATCHED)
+              );
               reject(ERROR_TYPES.CHANGE_USERNAME.PASSWORD_NOT_MATCHED);
             }
           } else {
+            logger.log('error',JSON.stringify(ERROR_TYPES.CHANGE_USERNAME.SESSION));
             reject(ERROR_TYPES.CHANGE_USERNAME.SESSION);
           }
         }
       });
     });
   } catch (e) {
-    console.log("Change Username Error Catch");
-    console.log(err);
-    reject(err);
+    logger.log('info',e);
+    reject(e);
   }
 }
 
@@ -333,7 +359,8 @@ function forgotPassword(email) {
       //Check and update user
       collection.findOne({ email: email }, function(err, data) {
         if (err) {
-          console.log(err);
+          logger.log('error',JSON.stringify(ERROR_TYPES.FORGOT_PASSWORD.COLLECTION));
+          logger.log('info',err);
           reject(ERROR_TYPES.FORGOT_PASSWORD.COLLECTION);
         } else {
           if (data != null) {
@@ -351,11 +378,14 @@ function forgotPassword(email) {
             );
             resolve(1);
           } else {
+            logger.log('error',JSON.stringify(ERROR_TYPES.FORGOT_PASSWORD.INVALID));
             reject(ERROR_TYPES.FORGOT_PASSWORD.INVALID);
           }
         }
       });
     } catch (e) {
+      logger.log('error',JSON.stringify(ERROR_TYPES.FORGOT_PASSWORD.COLLECTION));
+      logger.log('info',e);
       reject(ERROR_TYPES.FORGOT_PASSWORD.COLLECTION);
     }
   });
