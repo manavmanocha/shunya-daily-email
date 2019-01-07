@@ -4,8 +4,7 @@ let cron = require("node-cron");
 let dbcall = require("./admin-controller");
 let appConstant = require("../utils/constants");
 let appconfig = require("../config/app-config");
-let getsmtpTransporter = require("../utils/mail-transporter")
-  .getsmtpTransporter;
+let getsmtpTransporter = require("../utils/mail-transporter").getsmtpTransporter;
 
 function setMailOptions(receivers, mailtype, content) {
   let reminder_mailOptions = {
