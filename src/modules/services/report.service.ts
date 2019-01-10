@@ -9,16 +9,17 @@ export class ReportService {
   constructor(private httpClient: HttpClient) {}
   
   viewUser(view): Observable<Array<{}>> {
-    if (view.type == "Monthly") {
-      let month= view.month.split(" ");
-      view.month=month[0];
-      view.year=month[1];
+    let viewobj=Object.assign({}, view);
+    if (viewobj.type == "Monthly") {
+      let month= viewobj.month.split(" ");
+      viewobj.month=month[0];
+      viewobj.year=month[1];
       return this.httpClient.post<Array<{}>>("/api/viewMonthly", {
-        view: view
+        view: viewobj
       });
     }
-    if (view.type == "Yearly") {
-      return this.httpClient.post<Array<{}>>("/api/viewYearly", { view: view });
+    if (viewobj.type == "Yearly") {
+      return this.httpClient.post<Array<{}>>("/api/viewYearly", { view: viewobj });
     }
   }
 }

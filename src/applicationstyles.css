@@ -1,18 +1,35 @@
 /* You can add global styles to this file, and also import other style files */
-@import '~bootstrap/dist/css/bootstrap.min.css';
+@import "~bootstrap/dist/css/bootstrap.min.css";
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
-.help-block{
-    color: rgb(235, 72, 72);
+.help-block {
+  color: rgb(235, 72, 72);
 }
 
-.modal{
-    z-index:400;
+.modal {
+  z-index: 400;
 }
 
-.modal-backdrop{
-    z-index:200 !important;
+.modal-backdrop {
+  z-index: 200 !important;
 }
 
-label{
-    padding: 0 10px;
+label {
+  padding: 0 10px;
+}
+
+.report-dialog {
+  max-width: 80% !important;
+  margin-top: 0px !important;
+}
+
+@media print {
+  .noprint {
+    display: none;
+  }
+  .report-dialog {
+    max-width: 80% !important;
+    margin-top: 20px !important;
+    height: 100%;
+    overflow: visible;
+  }
 }

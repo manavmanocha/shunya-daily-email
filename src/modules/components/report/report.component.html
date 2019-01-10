@@ -10,14 +10,14 @@
           required
           #viewname="ngModel"
         >
-          <option disabled selected>Choose..</option>
+          <option disabled>Choose..</option>
           <option *ngFor="let user of allUsernames">{{ user.name }}</option>
         </select>
 
         <div class="form-group my-2">
           <div class="row form-control m-0 d-flex flex-column">
             <label for="viewtype" class="p-0">Report type :</label>
-            <label class="radio-inline p-md-0">
+            <label class="radio-inline p-0 px-md-1">
               <input
                 type="radio"
                 class="mr-1"
@@ -28,7 +28,7 @@
                 #viewtype="ngModel"
               />Monthly</label
             >
-            <label class="radio-inline px-md-2">
+            <label class="radio-inline p-0 px-md-2">
               <input
                 class="mx-1"
                 type="radio"

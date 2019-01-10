@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng build && node ./server/index",
+    "start": "ng build && gulp line-log && node ./dist/server/index",
     "build": "ng build",
     "lint": "ng lint",
     "postinstall": "npm run build"
@@ -28,6 +28,8 @@
     "core-js": "^2.5.4",
     "express": "^4.16.4",
     "googleapis": "^35.0.0",
+    "gulp": "^3.9.1",
+    "gulp-log-line": "^1.0.1",
     "jquery": "^3.3.1",
     "mongodb": "^3.1.9",
     "ngx-line-chart": "^1.0.0",

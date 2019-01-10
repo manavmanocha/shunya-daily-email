@@ -121,28 +121,34 @@ module.exports = {
         ID:20,
         VALUE: "Collection Connection failure",
         MESSAGE: "Sorry, something went wrong. Please try again later."
+      },
+      SESSION: {
+        ID:21,
+        VALUE: "User not found",
+        MESSAGE:
+          "Sorry, your session is lost. Please re-login in system and try again"
       }
     },
     FORGOT_PASSWORD: {
       INVALID: {
-        ID:21,
+        ID:22,
         VALUE: "User not found",
         MESSAGE: "Sorry, please contact the admin. We are unable to help you."
       },
       COLLECTION: {
-        ID:22,
+        ID:23,
         VALUE: "Collection Connection failure",
         MESSAGE: "Sorry, something went wrong. Please try again later."
       }
     },
     GET_LEAVES: {
       COLLECTION: {
-        ID:23,
+        ID:24,
         VALUE: "Collection Connection failure",
         MESSAGE: "Sorry, something went wrong. Please try again later."
       },
       SESSION: {
-        ID:24,
+        ID:25,
         VALUE: "User not found",
         MESSAGE:
           "Sorry, your session is lost. Please re-login in system and try again"
@@ -150,12 +156,12 @@ module.exports = {
     },
     GET_USERNAME: {
       COLLECTION: {
-        ID:25,
+        ID:26,
         VALUE: "Collection Connection failure",
         MESSAGE: "Sorry, something went wrong. Please try again later."
       },
       SESSION: {
-        ID:26,
+        ID:27,
         VALUE: "Id not found",
         MESSAGE:
           "Sorry, your session is lost. Please re-login in system and try again"
@@ -163,74 +169,74 @@ module.exports = {
     },
     MONTHLY_REPORT: {
       DATA_NOT_PRESENT: {
-        ID:27,
+        ID:28,
         VALUE: "Empty Report",
         MESSAGE: "Sorry, no data present for the user."
       },
       ERROR: {
-        ID:28,
+        ID:29,
         VALUE: "Report failure",
         MESSAGE: "Sorry, something went wrong. Please try again later."
       }
     },
     PENDING_LEAVES: {
       COLLECTION: {
-        ID:29,
+        ID:30,
         VALUE: "Collection Connection failure",
         MESSAGE: "Sorry, something went wrong. Please try again later."
       },
       EMPTY: {
-        ID:30,
+        ID:31,
         VALUE: "Empty pending leaves",
         MESSAGE: "Sorry, there are no pending leaves."
       }
     },
     RECORD_LEAVES: {
       COLLECTION: {
-        ID:31,
+        ID:32,
         VALUE: "Collection Connection failure",
         MESSAGE: "Sorry, something went wrong. Please try again later."
       }
     },
     REJECT_LEAVE: {
       COLLECTION: {
-        ID:32,
+        ID:33,
         VALUE: "Collection Connection failure",
         MESSAGE: "Sorry, something went wrong. Please try again later."
       },
       UPDATE: {
-        ID:33,
+        ID:34,
         VALUE: "Update failure",
         MESSAGE: "Sorry, something went wrong. Please try again later."
       }
     },
     UNAPPROVE_LEAVE: {
       COLLECTION: {
-        ID:34,
+        ID:35,
         VALUE: "Collection Connection failure",
         MESSAGE: "Sorry, something went wrong. Please try again later."
       },
       UPDATE: {
-        ID:35,
+        ID:36,
         VALUE: "Update failure",
         MESSAGE: "Sorry, something went wrong. Please try again later."
       }
     },
     UPDATE_LEAVES: {
       COLLECTION: {
-        ID:36,
+        ID:37,
         VALUE: "Collection Connection failure",
         MESSAGE: "Sorry, something went wrong. Please try again later."
       }
     },
     UPDATE_TIME: {
       UPDATE: {
-        ID:37,
+        ID:38,
         VALUE: "Update failure",
         MESSAGE: "Sorry, something went wrong. Please try again later."
       },
       SESSION: {
-        ID:38,
+        ID:39,
         VALUE: "User not found",
         MESSAGE:
           "Sorry, your session is lost. Please re-login in system and try again"
@@ -238,12 +244,12 @@ module.exports = {
     },
     YEARLY_REPORT: {
       DATA_NOT_PRESENT: {
-        ID:39,
+        ID:40,
         VALUE: "Empty Report",
         MESSAGE: "Sorry, no data present for the user."
       },
       ERROR: {
-        ID:40,
+        ID:41,
         VALUE: "Report failure",
         MESSAGE: "Sorry, something went wrong. Please try again later."
       }

@@ -16,8 +16,7 @@ const Timestamp = require("mongodb").Timestamp;
 let db = require("./databasecall-controller").getDBreference;
 let getUsername = require("./databasecall-controller").getUsername;
 let appconfig = require("../config/app-config");
-let logger = require("../errorHandler/error-handler");
-
+let logger = require("../logger/log-handler");
 
 /**************************************************
  * Exports
@@ -33,6 +32,7 @@ exports.unapproveTheLeave = unapproveTheLeave;
 exports.rejectTheLeave = rejectTheLeave;
 exports.cancelLeaves = cancelLeaves;
 exports.getmyLeaveRecord = getmyLeaveRecord;
+
 /**************************************************
  * Update Leaves for the user
  **************************************************/
@@ -44,10 +44,11 @@ function updateLeaves(user, leave, res) {
         collection
       ) {
         if (err) {
-          
-          logger.log('error',JSON.stringify(ERROR_TYPES.UPDATE_LEAVES.COLLECTION));
-          logger.log('info',err);
-          reject(ERROR_TYPES.UPDATE_LEAVES.COLLECTION);
+          let errObj = Object.assign({}, ERROR_TYPES.UPDATE_LEAVES.COLLECTION);
+          errObj.err = err;
+          logger.info();
+          logger.log("error", JSON.stringify(errObj));
+          reject(errObj);
         }
         (timestamp = new Timestamp(0, Math.floor(new Date().getTime() / 1000))),
           (updateobj =
@@ -61,7 +62,8 @@ function updateLeaves(user, leave, res) {
       });
     });
   } catch (err) {
-    logger.log('info',err);
+    logger.info();
+    logger.log("error", err);
     reject(err);
   }
 }
@@ -106,11 +108,14 @@ function getmyLeaves(id) {
             collection.findOne({ user: user }, function(err, data) {
               if (err || !data) {
                 if (err) {
-                  logger.log('error',
-                    JSON.stringify(ERROR_TYPES.GET_LEAVES.COLLECTION)
+                  let errObj = Object.assign(
+                    {},
+                    ERROR_TYPES.GET_LEAVES.COLLECTION
                   );
-                  logger.log('info',err);
-                  reject(ERROR_TYPES.GET_LEAVES.COLLECTION);
+                  errObj.err = err;
+                  logger.info();
+                  logger.log("error", JSON.stringify(errObj));
+                  reject(errObj);
                 }
               } else {
                 let leaves = [];
@@ -135,7 +140,8 @@ function getmyLeaves(id) {
         );
       })
       .catch(err => {
-        logger.log('error',err);
+        logger.info();
+        logger.log("error", err);
         res.send({
           status: false,
           errObject: err
@@ -155,9 +161,11 @@ function getmyLeaveRecord(user) {
     ) {
       collection.findOne({ user: user }, function(err, data) {
         if (err) {
-          logger.log('error',JSON.stringify(ERROR_TYPES.RECORD_LEAVES.COLLECTION));
-          logger.log('info',err);
-          reject(ERROR_TYPES.RECORD_LEAVES.COLLECTION);
+          let errObj = Object.assign({}, ERROR_TYPES.RECORD_LEAVES.COLLECTION);
+          errObj.err = err;
+          logger.info();
+          logger.log("error", JSON.stringify(errObj));
+          reject(errObj);
         }
         if (!data) {
           resolve(1);
@@ -184,19 +192,31 @@ async function getPendingLeaves() {
       collection
     ) {
       if (err) {
-        logger.log('error',JSON.stringify(ERROR_TYPES.PENDING_LEAVES.COLLECTION));
-        logger.log('info',err);
-        reject(ERROR_TYPES.PENDING_LEAVES.COLLECTION);
+        let errObj = Object.assign({}, ERROR_TYPES.PENDING_LEAVES.COLLECTION);
+        errObj.err = err;
+        logger.info();
+        logger.log("error", JSON.stringify(errObj));
+        reject(errObj);
       }
       let leave = [];
       collection.find({}, { pending: 1, user: 1, _id: 0 }).forEach(
         function(data) {
           if (!data) {
-            logger.log('error',JSON.stringify(ERROR_TYPES.PENDING_LEAVES.EMPTY));
+            logger.info();
+            logger.log(
+              "error",
+              JSON.stringify(ERROR_TYPES.PENDING_LEAVES.EMPTY)
+            );
             reject(ERROR_TYPES.PENDING_LEAVES.EMPTY);
           } else {
             if (data.pending != undefined) {
-              leave.push({ name: data.user, dates: data.pending });
+              pendobj={};
+              Object.entries(data.pending).forEach(([key, value]) => {
+                new Date() <= new Date(value.Lend.year, value.Lend.month, value.Lend.day)
+                  ? (pendobj[key]=value)
+                 : ""
+                 });
+              leave.push({ name: data.user, dates: pendobj });
             }
           }
         },
@@ -218,19 +238,31 @@ async function getApprovedLeaves() {
       collection
     ) {
       if (err) {
-        logger.log('error',JSON.stringify(ERROR_TYPES.APPROVED_LEAVES.COLLECTION));
-        logger.log('info',err);
-        reject(ERROR_TYPES.APPROVED_LEAVES.COLLECTION);
+        let errObj = Object.assign({}, ERROR_TYPES.APPROVED_LEAVES.COLLECTION);
+        errObj.err = err;
+        logger.info();
+        logger.log("error", JSON.stringify(errObj));
+        reject(errObj);
       }
       let approvedleave = [];
       collection.find({}, { approved: 1, user: 1, _id: 0 }).forEach(
         function(data) {
           if (!data) {
-            logger.log('error',JSON.stringify(ERROR_TYPES.APPROVED_LEAVES.EMPTY));
+            logger.info();
+            logger.log(
+              "error",
+              JSON.stringify(ERROR_TYPES.APPROVED_LEAVES.EMPTY)
+            );
             reject(ERROR_TYPES.APPROVED_LEAVES.EMPTY);
           } else {
             if (data.approved != undefined) {
-              approvedleave.push({ name: data.user, dates: data.approved });
+              appobj={};
+              Object.entries(data.approved).forEach(([key, value]) => {
+                new Date() <= new Date(value.Lend.year, value.Lend.month, value.Lend.day)
+                  ? (appobj[key]=value)
+                 : ""
+                 });
+              approvedleave.push({ name: data.user, dates: appobj });
             }
           }
         },
@@ -252,9 +284,11 @@ function approveTheLeave(leave_app, res) {
       collection
     ) {
       if (err) {
-        logger.log('error',JSON.stringify(ERROR_TYPES.APPROVE_LEAVES.COLLECTION));
-        logger.log('info',err);
-        reject(ERROR_TYPES.APPROVE_LEAVES.COLLECTION);
+        let errObj = Object.assign({}, ERROR_TYPES.APPROVE_LEAVES.COLLECTION);
+        errObj.err = err;
+        logger.info();
+        logger.log("error", JSON.stringify(errObj));
+        reject(errObj);
       }
       try {
         timestamp = new Timestamp(0, Math.floor(new Date().getTime() / 1000));
@@ -272,10 +306,12 @@ function approveTheLeave(leave_app, res) {
           { upsert: true }
         );
         resolve(1);
-      } catch (e) {
-        logger.log('error',JSON.stringify(ERROR_TYPES.APPROVE_LEAVES.UPDATE));
-        logger.log('info',e);
-        reject(ERROR_TYPES.APPROVE_LEAVES.UPDATE);
+      } catch (err) {
+        let errObj = Object.assign({}, ERROR_TYPES.APPROVE_LEAVES.UPDATE);
+        errObj.err = err;
+        logger.info();
+        logger.log("error", JSON.stringify(errObj));
+        reject(errObj);
       }
     });
   });
@@ -291,9 +327,11 @@ function unapproveTheLeave(leave_app) {
       collection
     ) {
       if (err) {
-        logger.log('error',JSON.stringify(ERROR_TYPES.UNAPPROVE_LEAVE.COLLECTION));
-        logger.log('info',err);
-        reject(ERROR_TYPES.UNAPPROVE_LEAVE.COLLECTION);
+        let errObj = Object.assign({}, ERROR_TYPES.UNAPPROVE_LEAVE.COLLECTION);
+        errObj.err = err;
+        logger.info();
+        logger.log("error", JSON.stringify(errObj));
+        reject(errObj);
       }
       try {
         timestamp = new Timestamp(0, Math.floor(new Date().getTime() / 1000));
@@ -311,10 +349,12 @@ function unapproveTheLeave(leave_app) {
           { upsert: true }
         );
         resolve(1);
-      } catch (e) {
-        logger.log('error',JSON.stringify(ERROR_TYPES.UNAPPROVE_LEAVE.UPDATE));
-        logger.log('info',e);
-        reject(ERROR_TYPES.UNAPPROVE_LEAVE.UPDATE);
+      } catch (err) {
+        let errObj = Object.assign({}, ERROR_TYPES.UNAPPROVE_LEAVE.UPDATE);
+        errObj.err = err;
+        logger.info();
+        logger.log("error", JSON.stringify(errObj));
+        reject(errObj);
       }
     });
   });
@@ -330,9 +370,11 @@ function rejectTheLeave(leave_app, res) {
       collection
     ) {
       if (err) {
-        logger.log('error',JSON.stringify(ERROR_TYPES.REJECT_LEAVE.COLLECTION));
-        logger.log('info',err);
-        reject(ERROR_TYPES.REJECT_LEAVE.COLLECTION);
+        let errObj = Object.assign({}, ERROR_TYPES.REJECT_LEAVE.COLLECTION);
+        errObj.err = err;
+        logger.info();
+        logger.log("error", JSON.stringify(errObj));
+        reject(errObj);
       }
       try {
         timestamp = new Timestamp(0, Math.floor(new Date().getTime() / 1000));
@@ -350,10 +392,12 @@ function rejectTheLeave(leave_app, res) {
           { upsert: true }
         );
         resolve(1);
-      } catch (e) {
-        logger.log('error',JSON.stringify(ERROR_TYPES.REJECT_LEAVE.UPDATE));
-        logger.log('info',e);
-        reject(ERROR_TYPES.REJECT_LEAVE.UPDATE);
+      } catch (err) {
+        let errObj = Object.assign({}, ERROR_TYPES.REJECT_LEAVE.UPDATE);
+        errObj.err = err;
+        logger.info();
+        logger.log("error", JSON.stringify(errObj));
+        reject(errObj);
       }
     });
   });
@@ -371,11 +415,14 @@ function cancelLeaves(cancel_app, id) {
             appconfig.database.collections.leaveCollection,
             function(err, collection) {
               if (err) {
-                logger.log('error',
-                  JSON.stringify(ERROR_TYPES.CANCEL_LEAVES.COLLECTION)
+                let errObj = Object.assign(
+                  {},
+                  ERROR_TYPES.CANCEL_LEAVES.COLLECTION
                 );
-                logger.log('info',err);
-                reject(ERROR_TYPES.CANCEL_LEAVES.COLLECTION);
+                errObj.err = err;
+                logger.info();
+                logger.log("error", JSON.stringify(errObj));
+                reject(errObj);
               }
               let removeobj;
               if (cancel_app.type == "A") {

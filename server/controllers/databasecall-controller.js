@@ -11,8 +11,8 @@ const MongoClient = require("mongodb").MongoClient;
  **************************************************/
 
 let appconfig = require("../config/app-config");
-let ERROR_TYPES = require("../errorHandler/error-constants").ERROR_TYPES;
-let logger = require("../errorHandler/error-handler");
+let ERROR_TYPES = require("../logger/error-constants").ERROR_TYPES;
+let logger = require("../logger/log-handler");
 
 /**************************************************
  * Exports
@@ -62,17 +62,25 @@ async function getUsername(id) {
         collection
       ) {
         if (err) {
-          logger.log('info',JSON.stringify(ERROR_TYPES.GET_USERNAME.COLLECTION));
-          logger.debug(err);
-          reject(ERROR_TYPES.GET_USERNAME.COLLECTION);
+          let errObj = Object.assign({}, ERROR_TYPES.GET_USERNAME.COLLECTION);
+          errObj.err = err;
+          logger.info();
+          logger.log("error", JSON.stringify(errObj));
+          reject(errObj);
         }
         collection.findOne({ _id: ObjectID(id) }, function(err, data) {
           if (err) {
-            logger.log('info',JSON.stringify(ERROR_TYPES.GET_USERNAME.COLLECTION));
-            logger.debug(err);
-            reject(ERROR_TYPES.GET_USERNAME.COLLECTION);
+            let errObj = Object.assign({}, ERROR_TYPES.GET_USERNAME.COLLECTION);
+            errObj.err = err;
+            logger.info();
+            logger.log("error", JSON.stringify(errObj));
+            reject(errObj);
           } else if (!data) {
-            logger.log('info',JSON.stringify(ERROR_TYPES.GET_USERNAME.SESSION));
+            logger.info();
+            logger.log(
+              "error",
+              JSON.stringify(ERROR_TYPES.GET_USERNAME.SESSION)
+            );
             reject(ERROR_TYPES.GET_USERNAME.SESSION);
           } else {
             resolve(data.username);
@@ -81,7 +89,8 @@ async function getUsername(id) {
       });
     });
   } catch (err) {
-    logger.log('info',err);
+    logger.info();
+    logger.log("error", err);
     reject(err);
   }
 }

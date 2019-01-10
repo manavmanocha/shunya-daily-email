@@ -14,17 +14,17 @@
     <ngb-tab id="tabForm" title="Tabular Form">
       <ng-template ngbTabContent>
         <div
-          class="d-flex flex-column mt-3"
-          style="overflow-y: auto; height:600px"
+          class="d-flex flex-column mt-3 table-container"
+          style="overflow-y: auto;"
         >
-          <mat-form-field>
+          <mat-form-field class="noprint">
             <input
               matInput
               (keyup)="applyFilter($event.target.value)"
               placeholder="Filter"
             />
           </mat-form-field>
-          <table mat-table [dataSource]="dataSource" matSort>
+          <table mat-table [dataSource]="dataSource" matSort class="visible-print">
             <!-- Column -->
             <ng-container matColumnDef="date">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
@@ -41,7 +41,7 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
           </table>
 
-          <mat-paginator
+          <mat-paginator class="noprint"
             [pageSize]="10"
             [length]="dataSource.length"
             [pageSizeOptions]="[10, 20, 35]"
@@ -80,7 +80,7 @@
       title="Analytic Form"
     >
       <ng-template ngbTabContent>
-        <div style="width: auto; height:600px;">
+        <div style="width: auto; height:500px;">
           <div class="alert alert-info mt-2">
             <strong>Timein Data Analytics</strong>
           </div>
@@ -105,11 +105,11 @@
     </ngb-tab>
   </ngb-tabset>
 </div>
-<div class="modal-footer">
+<div class="modal-footer noprint">
   <button
     type="button"
     class="btn btn-outline-dark"
-    (click)="activeModal.close('Close click')"
+    (click)="print()"
   >
     Print
   </button>

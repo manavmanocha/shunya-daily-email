@@ -22,6 +22,7 @@ export class RemoveUserComponent implements OnInit {
     this.allUsernames = [];
     this.managaeUserService.getUsernames().subscribe(res => {
       res.forEach(item => {
+        if(item!=localStorage.getItem('uname'))
         this.allUsernames.push({ name: item, selected: false });
       });
     });

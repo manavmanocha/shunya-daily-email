@@ -46,7 +46,7 @@ export const appRoutes: Routes = [
       { path: "apply-leave", component: ApplyLeaveComponent },
       { path: "status-leave", component: LeaveStatusComponent },
       { path: "record-leave", component: LeaveRecordsComponent },
-      { path: "profile/passsword", component: ChangePasswordComponent },
+      { path: "profile/password", component: ChangePasswordComponent },
       { path: "profile/username", component: ChangeUsernameComponent }
     ]
   },
@@ -63,7 +63,7 @@ export const appRoutes: Routes = [
       { path: "apply-leave", component: ApplyLeaveComponent },
       { path: "status-leave", component: LeaveStatusComponent },
       { path: "record-leave", component: LeaveRecordsComponent },
-      { path: "profile/passsword", component: ChangePasswordComponent },
+      { path: "profile/password", component: ChangePasswordComponent },
       { path: "profile/username", component: ChangeUsernameComponent }
     ]
   }

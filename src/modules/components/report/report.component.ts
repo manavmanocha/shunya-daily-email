@@ -80,9 +80,8 @@ export class ReportComponent implements OnInit {
   viewReport(): void {
     this.reportService.viewUser(this.view).subscribe(res => {
       const modalRef = this.modalService.open(ReportModalComponent);
-      modalRef.componentInstance.title = this.view.type + " Report";
+      modalRef.componentInstance.title = this.view.type + " Report : " +this.view.user;
       modalRef.componentInstance.inputdata = res;
-      console.log(res);
     });
   }
 }

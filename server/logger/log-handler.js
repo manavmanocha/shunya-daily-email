@@ -4,6 +4,7 @@ const { createLogger, format, transports } = require("winston");
 const path = require("path");
 const fs = require("fs");
 const logDir = "log";
+
 // Create the log directory if it does not exist
 if (!fs.existsSync(logDir)) {
   fs.mkdirSync(logDir);

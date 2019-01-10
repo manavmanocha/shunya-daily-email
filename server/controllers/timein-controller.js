@@ -11,8 +11,8 @@ const assert = require("assert");
 let db = require("./databasecall-controller").getDBreference;
 let getUsername = require("./databasecall-controller").getUsername;
 let appconfig = require("../config/app-config");
-let ERROR_TYPES = require("../errorHandler/error-constants").ERROR_TYPES;
-let logger = require("../errorHandler/error-handler");
+let ERROR_TYPES = require("../logger/error-constants").ERROR_TYPES;
+let logger = require("../logger/log-handler");
 
 /**************************************************
  * Exports
@@ -31,9 +31,11 @@ function updateTime(user, time) {
         collection
       ) {
         if (err) {
-          logger.log('error',JSON.stringify(ERROR_TYPES.UPDATE_TIME.COLLECTION));
-          logger.log('info',err);
-          reject(ERROR_TYPES.UPDATE_TIME.COLLECTION);
+          let errObj = Object.assign({}, ERROR_TYPES.UPDATE_TIME.COLLECTION);
+          errObj.err = err;
+          logger.info();
+          logger.log("error", JSON.stringify(errObj));
+          reject(errObj);
         }
         date = new Date();
         stringdate =
@@ -53,9 +55,11 @@ function updateTime(user, time) {
       });
     });
   } catch (err) {
-    logger.log('error',JSON.stringify(ERROR_TYPES.UPDATE_TIME.UPDATE));
-    logger.log('info',err);
-    reject(ERROR_TYPES.UPDATE_TIME.UPDATE);
+    let errObj = Object.assign({}, ERROR_TYPES.UPDATE_TIME.UPDATE);
+    errObj.err = err;
+    logger.info();
+    logger.log("error", JSON.stringify(errObj));
+    reject(errObj);
   }
 }
 
@@ -70,9 +74,11 @@ function findTime(user) {
         collection
       ) {
         if (err) {
-          logger.log('error',JSON.stringify(ERROR_TYPES.FIND_TIME.COLLECTION));
-          logger.log('info',err);
-          reject(ERROR_TYPES.FIND_TIME.COLLECTION);
+          let errObj = Object.assign({}, ERROR_TYPES.FIND_TIME.COLLECTION);
+          errObj.err = err;
+          logger.info();
+          logger.log("error", JSON.stringify(errObj));
+          reject(errObj);
         }
         date = new Date();
         stringdate =
@@ -84,9 +90,11 @@ function findTime(user) {
           date.getFullYear();
         collection.findOne({ date: stringdate }, function(err, data) {
           if (err) {
-            logger.log('error',JSON.stringify(ERROR_TYPES.FIND_TIME.COLLECTION));
-            logger.log('info',err);
-            reject(ERROR_TYPES.FIND_TIME.COLLECTION);
+            let errObj = Object.assign({}, ERROR_TYPES.FIND_TIME.COLLECTION);
+            errObj.err = err;
+            logger.info();
+            logger.log("error", JSON.stringify(errObj));
+            reject(errObj);
           } else if (!data) {
             resolve(false);
           } else {
@@ -96,7 +104,8 @@ function findTime(user) {
       });
     });
   } catch (err) {
-    logger.log('info',err);
+    logger.info();
+    logger.log("error", err);
     reject(err);
   }
 }
@@ -112,6 +121,8 @@ function saveTime(id, time, res) {
       });
     })
     .catch(err => {
+      logger.info();
+      logger.log("error", err);
       res.send({
         status: false,
         errObject: err
@@ -134,6 +145,8 @@ function getTime(id, res) {
       });
     })
     .catch(err => {
+      logger.info();
+      logger.log("error", err);
       res.send({
         status: false,
         errObject: err

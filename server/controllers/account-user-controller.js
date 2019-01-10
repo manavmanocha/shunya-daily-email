@@ -14,9 +14,9 @@ let getUsername = require("./databasecall-controller").getUsername;
 let sendmail = require("./mailer-controller").sendmail;
 let appconfig = require("../config/app-config");
 let appConstant = require("../utils/constants");
-let ERROR_TYPES = require("../errorHandler/error-constants").ERROR_TYPES;
+let ERROR_TYPES = require("../logger/error-constants").ERROR_TYPES;
 
-let logger = require("../errorHandler/error-handler");
+let logger = require("../logger/log-handler");
 
 /**************************************************
  * Exports
@@ -74,7 +74,8 @@ function loginUser(email, password, res, cookies) {
       });
     });
   } catch (err) {
-    logger.log('info',err);
+    logger.info();
+    logger.log("error", err);
     res.send({ status: false, _id: null, uemail: null });
   }
 }
@@ -95,18 +96,23 @@ function createUser(user) {
         { $or: [{ email: user.email }, { username: user.username }] },
         function(err, data) {
           if (err) {
-            logger.log('error',JSON.stringify(ERROR_TYPES.CREATE_USER.COLLECTION));
-            logger.log('info',err);
-            reject(ERROR_TYPES.CREATE_USER.COLLECTION);
+            let errObj = Object.assign({}, ERROR_TYPES.CREATE_USER.COLLECTION);
+            errObj.err = err;
+            logger.info();
+            logger.log("error", JSON.stringify(errObj));
+            reject(errObj);
           } else {
             if (data == null) {
               collection.insertOne(user, function(err, dbresponse) {
                 if (err) {
-                  logger.log('error',
-                    JSON.stringify(ERROR_TYPES.CREATE_USER.INSERTION)
+                  let errObj = Object.assign(
+                    {},
+                    ERROR_TYPES.CREATE_USER.INSERTION
                   );
-                  logger.log('info',err);
-                  reject(ERROR_TYPES.CREATE_USER.INSERTION);
+                  errObj.err = err;
+                  logger.info();
+                  logger.log("error", JSON.stringify(errObj));
+                  reject(errObj);
                 } else {
                   usertext = "";
                   Object.entries(user).forEach(([key, value]) => {
@@ -121,20 +127,25 @@ function createUser(user) {
                 }
               });
             } else {
-              logger.log('error',
-                JSON.stringify(ERROR_TYPES.CREATE_USER.USERDATA_EXISTS)
+              let errObj = Object.assign(
+                {},
+                ERROR_TYPES.CREATE_USER.USERDATA_EXISTS
               );
-              logger.log('info',err);
-              reject(ERROR_TYPES.CREATE_USER.USERDATA_EXISTS);
+              errObj.err = err;
+              logger.info();
+              logger.log("error", JSON.stringify(errObj));
+              reject(errObj);
             }
           }
         }
       );
     });
-  } catch (e) {
-    logger.log('error',JSON.stringify(ERROR_TYPES.CHANGE_USERNAME.SESSION));
-    logger.log('info',e);
-    reject(ERROR_TYPES.CHANGE_USERNAME.SESSION);
+  } catch (err) {
+    let errObj = Object.assign({}, ERROR_TYPES.CREATE_USER.SESSION);
+    errObj.err = err;
+    logger.info();
+    logger.log("error", JSON.stringify(errObj));
+    reject(errObj);
   }
 }
 
@@ -168,7 +179,7 @@ function removeUser(user) {
           }
         }
       });
-    } catch (e) {
+    } catch (err) {
       resolve({ [user]: false });
     }
   });
@@ -186,15 +197,19 @@ async function checkUser(id) {
         collection
       ) {
         if (err) {
-          logger.log('error',JSON.stringify(ERROR_TYPES.CHECK_USER.COLLECTION));
-          logger.log('info',err);
-          reject(ERROR_TYPES.CHECK_USER.COLLECTION);
+          let errObj = Object.assign({}, ERROR_TYPES.CHECK_USER.COLLECTION);
+          errObj.err = err;
+          logger.info();
+          logger.log("error", JSON.stringify(errObj));
+          reject(errObj);
         }
         collection.findOne({ _id: ObjectID(id) }, function(err, data) {
           if (err) {
-            logger.log('error',JSON.stringify(ERROR_TYPES.CHECK_USER.COLLECTION));
-            logger.log('info',err);
-            reject(ERROR_TYPES.CHECK_USER.COLLECTION);
+            let errObj = Object.assign({}, ERROR_TYPES.CHECK_USER.COLLECTION);
+            errObj.err = err;
+            logger.info();
+            logger.log("error", JSON.stringify(errObj));
+            reject(errObj);
           } else if (!data) {
             reject(ERROR_TYPES.CHECK_USER.SESSION);
           } else {
@@ -204,7 +219,8 @@ async function checkUser(id) {
       });
     });
   } catch (err) {
-    logger.log('info',err);
+    logger.info();
+    logger.log("error", err);
     reject(err);
   }
 }
@@ -235,9 +251,14 @@ function changePassword(user, id) {
       //Check and update user
       collection.findOne({ _id: id }, function(err, data) {
         if (err) {
-          logger.log('error',JSON.stringify(ERROR_TYPES.CHANGE_PASSWORD.COLLECTION));
-          logger.log('info',err);
-          reject(ERROR_TYPES.CHANGE_PASSWORD.COLLECTION);
+          let errObj = Object.assign(
+            {},
+            ERROR_TYPES.CHANGE_PASSWORD.COLLECTION
+          );
+          errObj.err = err;
+          logger.info();
+          logger.log("error", JSON.stringify(errObj));
+          reject(errObj);
         } else {
           if (data != null) {
             if (data.password == user.oldpassword) {
@@ -248,20 +269,27 @@ function changePassword(user, id) {
               );
               resolve(1);
             } else {
-              logger.log('error',
+              logger.info();
+              logger.log(
+                "error",
                 JSON.stringify(ERROR_TYPES.CHANGE_PASSWORD.PASSWORD)
               );
               reject(ERROR_TYPES.CHANGE_PASSWORD.PASSWORD);
             }
           } else {
-            logger.log('error',JSON.stringify(ERROR_TYPES.CHANGE_PASSWORD.SESSION));
+            logger.info();
+            logger.log(
+              "error",
+              JSON.stringify(ERROR_TYPES.CHANGE_PASSWORD.SESSION)
+            );
             reject(ERROR_TYPES.CHANGE_PASSWORD.SESSION);
           }
         }
       });
     });
   } catch (err) {
-    logger.log('info',err);
+    logger.info();
+    logger.log("error", err);
     reject(err);
   }
 }
@@ -278,9 +306,14 @@ function changeUsername(user, id) {
       );
       collection.findOne({ _id: id }, function(err, data) {
         if (err) {
-          logger.log('error',JSON.stringify(ERROR_TYPES.CHANGE_USERNAME.COLLECTION));
-          logger.log('info',err);
-          reject(ERROR_TYPES.CHANGE_USERNAME.COLLECTION);
+          let errObj = Object.assign(
+            {},
+            ERROR_TYPES.CHANGE_USERNAME.COLLECTION
+          );
+          errObj.err = err;
+          logger.info();
+          logger.log("error", JSON.stringify(errObj));
+          reject(errObj);
         } else {
           if (data != null) {
             if (data.password == user.password) {
@@ -289,11 +322,14 @@ function changeUsername(user, id) {
                 data
               ) {
                 if (err) {
-                  logger.log('error',
-                    JSON.stringify(ERROR_TYPES.CHANGE_USERNAME.COLLECTION)
+                  let errObj = Object.assign(
+                    {},
+                    ERROR_TYPES.CHANGE_USERNAME.COLLECTION
                   );
-                  logger.log('info',err);
-                  reject(ERROR_TYPES.CHANGE_USERNAME.COLLECTION);
+                  errObj.err = err;
+                  logger.info();
+                  logger.log("error", JSON.stringify(errObj));
+                  reject(errObj);
                 } else {
                   if (data == null) {
                     collection.updateOne(
@@ -303,7 +339,9 @@ function changeUsername(user, id) {
                     );
                     resolve(1);
                   } else {
-                    logger.log('error',
+                    logger.info();
+                    logger.log(
+                      "error",
                       JSON.stringify(
                         ERROR_TYPES.CHANGE_USERNAME.USERNAME_EXISTS
                       )
@@ -313,21 +351,28 @@ function changeUsername(user, id) {
                 }
               });
             } else {
-              logger.log('error',
+              logger.info();
+              logger.log(
+                "error",
                 JSON.stringify(ERROR_TYPES.CHANGE_USERNAME.PASSWORD_NOT_MATCHED)
               );
               reject(ERROR_TYPES.CHANGE_USERNAME.PASSWORD_NOT_MATCHED);
             }
           } else {
-            logger.log('error',JSON.stringify(ERROR_TYPES.CHANGE_USERNAME.SESSION));
+            logger.info();
+            logger.log(
+              "error",
+              JSON.stringify(ERROR_TYPES.CHANGE_USERNAME.SESSION)
+            );
             reject(ERROR_TYPES.CHANGE_USERNAME.SESSION);
           }
         }
       });
     });
-  } catch (e) {
-    logger.log('info',e);
-    reject(e);
+  } catch (err) {
+    logger.info();
+    logger.log("error", err);
+    reject(err);
   }
 }
 
@@ -359,9 +404,14 @@ function forgotPassword(email) {
       //Check and update user
       collection.findOne({ email: email }, function(err, data) {
         if (err) {
-          logger.log('error',JSON.stringify(ERROR_TYPES.FORGOT_PASSWORD.COLLECTION));
-          logger.log('info',err);
-          reject(ERROR_TYPES.FORGOT_PASSWORD.COLLECTION);
+          let errObj = Object.assign(
+            {},
+            ERROR_TYPES.FORGOT_PASSWORD.COLLECTION
+          );
+          errObj.err = err;
+          logger.info();
+          logger.log("error", JSON.stringify(errObj));
+          reject(errObj);
         } else {
           if (data != null) {
             let newpassword = generatePassword(appConstant.PASSWORD_LENGTH);
@@ -378,15 +428,21 @@ function forgotPassword(email) {
             );
             resolve(1);
           } else {
-            logger.log('error',JSON.stringify(ERROR_TYPES.FORGOT_PASSWORD.INVALID));
+            logger.info();
+            logger.log(
+              "error",
+              JSON.stringify(ERROR_TYPES.FORGOT_PASSWORD.INVALID)
+            );
             reject(ERROR_TYPES.FORGOT_PASSWORD.INVALID);
           }
         }
       });
-    } catch (e) {
-      logger.log('error',JSON.stringify(ERROR_TYPES.FORGOT_PASSWORD.COLLECTION));
-      logger.log('info',e);
-      reject(ERROR_TYPES.FORGOT_PASSWORD.COLLECTION);
+    } catch (err) {
+      let errObj = Object.assign({}, ERROR_TYPES.FORGOT_PASSWORD.COLLECTION);
+      errObj.err = err;
+      logger.info();
+      logger.log("error", JSON.stringify(errObj));
+      reject(errObj);
     }
   });
 }

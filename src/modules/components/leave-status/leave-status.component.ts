@@ -22,10 +22,15 @@ export class LeaveStatusComponent implements OnInit {
 
   getmyLeaves() {
     this.unavailableDates = [];
-    this.leaveService.getLeaves().subscribe((response:any) => {
-      if(response.status)
-      this.unavailableDates = response.leaves;
-      else{
+    this.leaveService.getLeaves().subscribe((response: any) => {
+      if (response.status) {
+        this.unavailableDates;
+        response.leaves.forEach((item: any) => {
+          new Date() < new Date(item.Lend.year, item.Lend.month, item.Lend.day)
+            ? this.unavailableDates.push(item)
+            : "";
+        });
+      } else {
         const modalRef = this.modalService.open(MsgModalComponent);
         modalRef.componentInstance.title = "Leave Application";
         if (response.hasOwnProperty("errObject")) {
@@ -40,7 +45,7 @@ export class LeaveStatusComponent implements OnInit {
   cancelMyLeave(leave_app: any) {
     this.leaveService
       .cancelLeaves(leave_app.type, leave_app.id)
-      .subscribe((res:any) => {
+      .subscribe((res: any) => {
         const modalRef = this.modalService.open(MsgModalComponent);
         modalRef.componentInstance.title = "Leave Application";
         if (res.status) {

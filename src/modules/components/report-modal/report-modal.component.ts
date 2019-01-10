@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, OnInit } from "@angular/core";
+import { Component, Input, ViewChild, OnInit, Renderer2, ElementRef  } from "@angular/core";
 import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { MatSort, MatPaginator, MatTableDataSource } from "@angular/material";
 import { NgxLineChartModule } from "./../../../libs/my-ngx-line-chart";
@@ -37,9 +37,15 @@ export class ReportModalComponent implements OnInit {
   showGridLines = "true";
   yScaleMin = 0;
   yScaleMax = 2359;
-  constructor(public activeModal: NgbActiveModal) {}
+  constructor(public activeModal: NgbActiveModal,
+    private renderer : Renderer2,
+    private elRef: ElementRef
+  ) {}
 
   ngOnInit() {
+    const modalDialog = this.renderer.parentNode(this.renderer.parentNode(this.elRef.nativeElement));
+    console.log(modalDialog);
+    setTimeout(()=>{this.renderer.addClass(modalDialog, 'report-dialog');});
     let chartdata = [];
     let ana = [];
     this.inputdata.forEach(function(item, index) {
@@ -98,6 +104,9 @@ export class ReportModalComponent implements OnInit {
 
   applyFilter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+  print(){
+    window.print();
   }
 
   frequencyArray(arr) {

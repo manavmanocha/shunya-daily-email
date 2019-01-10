@@ -12,7 +12,7 @@ let ObjectID = require("mongodb").ObjectID;
 let db = require("./databasecall-controller").getDBreference;
 let appconfig = require("../config/app-config");
 let appConstant = require("../utils/constants");
-let logger = require("../errorHandler/error-handler");
+let logger = require("../logger/log-handler");
 
 /**************************************************
  * Exports
@@ -20,6 +20,8 @@ let logger = require("../errorHandler/error-handler");
 
 exports.viewYearly = viewYearly;
 exports.viewMonthly = viewMonthly;
+
+//////////////////////////////////////////
 
 function idFromDate(date) {
   return Math.floor(date.getTime() / 1000).toString(16) + "0000000000000000";
@@ -49,11 +51,15 @@ function viewYearly(view) {
         .forEach(
           function(data) {
             if (err) {
-              logger.log('error',JSON.stringify(ERROR_TYPES.YEARLY_REPORT.ERROR));
-              logger.log('info',err);
-              reject(ERROR_TYPES.YEARLY_REPORT.ERROR);
+              let errObj = Object.assign({}, ERROR_TYPES.YEARLY_REPORT.ERROR);
+              errObj.err = err;
+              logger.info();
+              logger.log("error", JSON.stringify(errObj));
+              reject(errObj);
             } else if (!data) {
-              logger.log('error',
+              logger.info();
+              logger.log(
+                "error",
                 JSON.stringify(ERROR_TYPES.YEARLY_REPORT.DATA_NOT_PRESENT)
               );
               reject(ERROR_TYPES.YEARLY_REPORT.DATA_NOT_PRESENT);
@@ -111,11 +117,15 @@ function viewMonthly(view) {
         .forEach(
           function(data) {
             if (err) {
-              logger.log('error',JSON.stringify(ERROR_TYPES.YEARLY_REPORT.ERROR));
-              logger.log('info',err);
-              reject(ERROR_TYPES.YEARLY_REPORT.ERROR);
+              let errObj = Object.assign({}, ERROR_TYPES.MONTHLY_REPORT.ERROR);
+              errObj.err = err;
+              logger.info();
+              logger.log("error", JSON.stringify(errObj));
+              reject(errObj);
             } else if (!data) {
-              logger.log('error',
+              logger.info();
+              logger.log(
+                "error",
                 JSON.stringify(ERROR_TYPES.MONTHLY_REPORT.DATA_NOT_PRESENT)
               );
               reject(ERROR_TYPES.MONTHLY_REPORT.DATA_NOT_PRESENT);

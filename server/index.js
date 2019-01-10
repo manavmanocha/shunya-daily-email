@@ -17,7 +17,8 @@ let initializer= require("./controllers/connection-handler");
 **************************************************/ 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: "false" }));
-app.use(express.static(path.join(__dirname, "../dist")));
+
+app.use(express.static(path.join(__dirname, "..")));
 app.use("/api", api_route);
 
 /**************************************************
@@ -29,7 +30,7 @@ module.exports = app;
  * Get method route serve index file
 **************************************************/ 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../dist/index.html"));
+  res.sendFile(path.join(__dirname, "../index.html"));
 });
 
 /**************************************************
